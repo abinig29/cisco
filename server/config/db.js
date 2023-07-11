@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-export default connect = () => {
+export default () => {
   try {
     mongoose.connect(process.env.DB_URL, {
       useNewUrlParser: true,

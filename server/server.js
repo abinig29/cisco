@@ -10,11 +10,14 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import connect from "./config/db.js";
-import { __dirname, __filename } from "./config/dirSetup.js";
+import { fileURLToPath } from "url";
+
 import { rootRouter } from "./route/index.js";
 
 /* CONFIG */
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
@@ -26,7 +29,8 @@ app.use(bodyParser.json({ extends: true }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(helmet());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+console.log(__dirname);
+app.use("/", express.static(path.join(__dirname, "public")));
 connect();
 
 /* FILE STORAGE */
