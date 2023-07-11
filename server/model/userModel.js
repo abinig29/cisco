@@ -34,7 +34,7 @@ userSchema.pre("save", async function (next) {
   this.password = hashedPass;
   next();
 });
-userSchema.method.generateAccessToken = function () {
+userSchema.methods.generateAccessToken = function () {
   const userInfo = {
     userId: this._id,
     role: this.role,
@@ -43,7 +43,7 @@ userSchema.method.generateAccessToken = function () {
     expiresIn: process.env.JWT_ACCESS_EXP,
   });
 };
-userSchema.method.generateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function () {
   const userInfo = {
     userId: this._id,
     role: this.role,

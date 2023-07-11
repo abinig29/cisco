@@ -33,7 +33,6 @@ export const getUsers = async (req, res) => {
 //@desc update users
 //@method PATCH /user/:id
 //@access private
-
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id).lean().exec();

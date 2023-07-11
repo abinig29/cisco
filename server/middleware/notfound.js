@@ -7,7 +7,7 @@ export default (req, res) => {
   if (req.accepts("html"))
     return res
       .status(404)
-      .sendFile(path.join(__dirname, "..", "notFound.html"));
+      .sendFile(path.join(__dirname, "..", "views", "notFound.html"));
   else if (req.accepts("json"))
     return res.status(404).json({ message: "page not found" });
 };

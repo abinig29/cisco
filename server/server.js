@@ -11,6 +11,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import connect from "./config/db.js";
 import { fileURLToPath } from "url";
+import { verifyJWT } from "./middleware/verifyToken.js";
 import {
   rootRouter,
   courseRouter,
@@ -21,7 +22,7 @@ import { createCourse } from "./controller/courseController.js";
 import notFoundMiddleware from "./middleware/notfound.js";
 import errorHandlerMiddleware from "./middleware/errorHandler.js";
 import corsOptions from "./config/corsOption.js";
-v;
+
 import { createUser } from "./controller/userController.js";
 /* CONFIG */
 
@@ -58,14 +59,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
-app.post("/api/v1/course", upload.single("picture"), createCourse);
-app.post("/api/v1/user", upload.single("picture"), createUser);
+app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
+app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
 
 /* ROUTES */
 
 app.use("/", rootRouter);
-app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/user", userRouter);
 
 /* ERROR HANDLER */

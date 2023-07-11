@@ -56,9 +56,13 @@ export const deleteCourse = async (req, res) => {
 //@access private
 export const coverTopic = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.user;
   const { topic } = req.body;
   const course = await Course.findById(id).exec();
   if (!course) throw new BadRequestError("No course was found");
+
+  if (!course.lecture.includes(userId))
+    throw new BadRequestError("Cannot update courses other than yours");
   if (!course.topics.includes(topic))
     throw new BadRequestError("Provided topic isnt part of this course");
   if (course.coverdTopics.includes(topic)) {
@@ -81,8 +85,11 @@ export const coverTopic = async (req, res) => {
 //@access private
 export const updateCourse = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.user;
   const course = await Course.findById(id).lean().exec();
   if (!course) throw new BadRequestError("No course found");
+  if (!course.lecture.includes(userId))
+    throw new BadRequestError("Cannot update courses other than yours");
   const updatedCourse = await User.findByIdAndUpdate(id, req.body, {
     new: true,
   });
