@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -33,5 +34,23 @@ userSchema.pre("save", async function (next) {
   this.password = hashedPass;
   next();
 });
+userSchema.method.generateAccessToken = function () {
+  const userInfo = {
+    userId: this._id,
+    role: this.role,
+  };
+  return jwt.sign(userInfo, process.env.JWT_ACCESS_SECRET, {
+    expiresIn: process.env.JWT_ACCESS_EXP,
+  });
+};
+userSchema.method.generateRefreshToken = function () {
+  const userInfo = {
+    userId: this._id,
+    role: this.role,
+  };
+  return jwt.sign(userInfo, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: process.env.JWT_REFRESH_EXP,
+  });
+};
 
 export default mongoose.model("User", userSchema);

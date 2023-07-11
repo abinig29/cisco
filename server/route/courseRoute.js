@@ -5,12 +5,12 @@ import {
   deleteCourse,
   coverTopic,
   updateCourse,
-} from "";
+} from "../controller/courseController.js";
 
 const router = express.Router();
 
 router.route("/").get(getCourses).post(createCourse);
 router.route("/:id").patch(updateCourse).delete(deleteCourse);
-route.route("/:id/coverTopic").patch(coverTopic);
+router.route("/:id/coverTopic").patch(coverTopic);
 
 export default router;

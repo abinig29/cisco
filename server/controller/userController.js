@@ -1,17 +1,24 @@
 import User from "../model/userModel.js";
 import { BadRequestError, NotFoundError } from "../error/index.js";
 
+//@desc create new user
+//@method POST /user
+//@access private
 export const createUser = async (req, res) => {
   const { email } = req.body;
-  const duplicate = await User.findOne(email).lean().exec();
+  const duplicate = await User.findOne({ email }).lean().exec();
   if (duplicate) throw new BadRequestError("user found with this email");
-  const user = await User.create(req.body);
+  const user = await User.create({ ...req.body, picture: req.file?.filename });
   if (user) {
     res.status(201).json(user);
   } else {
     throw new BadRequestError("Invalid user credential");
   }
 };
+
+//@desc get users
+//@method GET /user
+//@access private
 export const getUsers = async (req, res) => {
   const query = req.query;
   const tempQuery = {};
@@ -23,8 +30,12 @@ export const getUsers = async (req, res) => {
   res.status(200).json(users);
 };
 
+//@desc update users
+//@method PATCH /user/:id
+//@access private
+
 export const updateUser = async (req, res) => {
-  const { id } = req.param;
+  const { id } = req.params;
   const user = await User.findById(id).lean().exec();
   if (!user) throw new BadRequestError("No user found");
   const updatedUser = await User.findByIdAndUpdate(id, req.body, {
@@ -37,12 +48,16 @@ export const updateUser = async (req, res) => {
     throw new BadRequestError("Invalid user credential, cannot update");
   }
 };
+
+//@desc delete users
+//@method DELETE /user/:id
+//@access private
 export const deleteUser = async (req, res) => {
-  const { id } = req.param;
+  const { id } = req.params;
   const user = await User.findById(id).exec();
   if (!user) throw new BadRequestError("No user found");
-  const deletedUser = await user.deleteOne();
+  await user.deleteOne();
   res.status(204).json({
-    message: `Username ${deletedUser.firstName} with ID ${deleteUser._id} deleted`,
+    message: `User deleted`,
   });
 };

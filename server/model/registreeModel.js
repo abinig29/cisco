@@ -22,7 +22,7 @@ const registreeSchema = new mongoose.Schema(
       required: [true, "you must provide bill photo"],
     },
     course: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: [true, "choose course"],
     },

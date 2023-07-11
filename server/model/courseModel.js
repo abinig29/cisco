@@ -15,9 +15,9 @@ const courseSchema = new mongoose.Schema(
     description: String,
     picture: String,
     lecture: {
-      type: [mongoose.Types.ObjectId],
+      type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
-      required: [true, "must have lecture"],
+      //   required: [true, "must have lecture"],
     },
     topics: [String],
     coverdTopics: [String],

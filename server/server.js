@@ -11,9 +11,18 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import connect from "./config/db.js";
 import { fileURLToPath } from "url";
-
-import { rootRouter } from "./route/index.js";
-
+import {
+  rootRouter,
+  courseRouter,
+  userRouter,
+  authRouter,
+} from "./route/index.js";
+import { createCourse } from "./controller/courseController.js";
+import notFoundMiddleware from "./middleware/notfound.js";
+import errorHandlerMiddleware from "./middleware/errorHandler.js";
+import corsOptions from "./config/corsOption.js";
+v;
+import { createUser } from "./controller/userController.js";
 /* CONFIG */
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,7 +33,7 @@ const app = express();
 if ((process.env.NODE_ENV = "development")) {
   app.use(morgan("common"));
 }
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ extends: true }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(helmet());
@@ -49,10 +58,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
+app.post("/api/v1/course", upload.single("picture"), createCourse);
+app.post("/api/v1/user", upload.single("picture"), createUser);
 
 /* ROUTES */
 
 app.use("/", rootRouter);
+app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
+
+/* ERROR HANDLER */
+
+app.use("*", notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 /* MONGOOSE CONNECT */
 mongoose.connection.once("open", () => {
