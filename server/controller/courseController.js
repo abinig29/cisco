@@ -9,27 +9,31 @@ import mongoose from "mongoose";
 export const getCourses = async (req, res) => {
   const courses = await Course.find().lean();
   if (!courses?.length) throw new NotFoundError("No course was found");
-  const formatedCourses = await Promise.all(
-    courses.map(async (course) => {
-      const formatedLectures = await Promise.all(
-        course.lecture.map((lecture) => User.findOne({ lecture }).lean().exec())
-      );
-      return { ...course, lecture: formatedLectures };
-    })
-  );
-
-  res.status(200).json({ courses: formatedCourses });
+  // const formatedCourses = await Promise.all(
+  //   courses.map(async (course) => {
+  //     const formatedLectures = await Promise.all(
+  //       course.lecture.map((lecture) => User.findOne({ lecture }).lean().exec())
+  //     );
+  //     return { ...course, lecture: formatedLectures };
+  //   })
+  // );
+  res.status(200).json({ courses: courses });
 };
 
 //@desc create new course
 //@method POST /course
 //@access private
 export const createCourse = async (req, res) => {
-  const { courseCode } = req.body;
+  const { courseCode, topics, coverdTopics } = req.body;
   const duplicate = await Course.findOne({ courseCode });
   if (duplicate) throw new BadRequestError("Course dose exist");
 
-  let courseBody = { ...req.body, picture: req.file?.filename };
+  let courseBody = {
+    ...req.body,
+    topics: topics ? topics.split(",") : [],
+    coverdTopics: coverdTopics ? coverdTopics.split(",") : [],
+    picture: req.file?.filename,
+  };
   const course = await Course.create(courseBody);
   if (course) {
     res.status(201).json(course);

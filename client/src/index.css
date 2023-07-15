@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600&family=Poppins:ital,wght@0,400;0,500;1,200;1,300&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  scroll-behavior: smooth;
+}
+.bg {
+  background-image: url(./assets/server.jpg);
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
+    url(./assets/server.jpg);
+  background-position: center;
+  background-size: cover;
+}

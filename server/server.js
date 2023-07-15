@@ -35,9 +35,10 @@ if ((process.env.NODE_ENV = "development")) {
   app.use(morgan("common"));
 }
 app.use(cors(corsOptions));
-app.use(bodyParser.json({ extends: true }));
+app.use(bodyParser.json({ extends: true, limit: "30mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(cookieParser());
 console.log(__dirname);
 app.use("/", express.static(path.join(__dirname, "public")));
@@ -46,7 +47,7 @@ connect();
 /* FILE STORAGE */
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads");
+    cb(null, "./public/uploads/");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -59,8 +60,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
-app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
-app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
+// app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
+app.post("/api/v1/course", upload.single("picture"), createCourse);
+// app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
+app.post("/api/v1/user", upload.single("picture"), createUser);
 
 /* ROUTES */
 

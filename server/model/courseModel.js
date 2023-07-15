@@ -13,6 +13,7 @@ const courseSchema = new mongoose.Schema(
       type: Date,
     },
     description: String,
+    shortDescription: String,
     picture: String,
     lecture: {
       type: [mongoose.Schema.Types.ObjectId],

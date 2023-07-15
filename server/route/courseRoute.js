@@ -14,8 +14,11 @@ const router = express.Router();
 router.get("/", getCourses);
 router
   .route("/:id")
-  .patch(verifyJWT, verfiyRole(roles.admin, roles.lecture), updateCourse)
-  .delete(verifyJWT, verfiyRole(roles.admin), deleteCourse);
+  // .patch(verifyJWT, verfiyRole(roles.admin, roles.lecture), updateCourse)
+  .patch(updateCourse)
+  // .delete(verifyJWT, verfiyRole(roles.admin), deleteCourse);
+  .delete(deleteCourse);
+
 router.route("/:id/coverTopic").patch(verifyJWT, coverTopic);
 
 export default router;
