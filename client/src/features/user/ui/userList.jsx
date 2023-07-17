@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Oval } from 'react-loader-spinner'
 
 import { selectIds, useGetUsersQuery } from '../userApiSlice.js'
 import { useSelector } from 'react-redux'
@@ -14,12 +15,32 @@ const UsersList = () => {
     const navigate = useNavigate()
     if (isError) {
         return (
-            <h3>{error?.data?.message}</h3>
+            <div>
+                <div className='px-10 py-6 flex justify-between '>
+                    <h1 className='font-bold font-poppins text-4xl text-white'>Courses</h1>
+                    <button onClick={() => navigate("create",)} className='px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg'>Add New Course</button>
+                </div>
+                <h3>{error?.data?.message}</h3>
+            </div>
         )
     }
     if (isLoading) {
         return (
-            <h3>Loading</h3>
+            <div className='grid place-content-center  h-screen'>
+                <Oval
+                    height={120}
+                    width={120}
+                    color="#4fa94d"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel='oval-loading'
+                    secondaryColor="#4fa94d"
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+
+                />
+            </div>
         )
     }
 
@@ -27,7 +48,6 @@ const UsersList = () => {
 
     return (
         <div>
-
             <div className='px-10 py-6 flex justify-between '>
                 <h1 className='font-bold font-poppins text-4xl text-white'>Courses</h1>
                 <button onClick={() => navigate("create",)} className='px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg'>Add New Course</button>

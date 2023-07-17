@@ -9,7 +9,7 @@ import { verfiyRole } from "../middleware/verifyRole.js";
 import { roles } from "../config/role.js";
 
 const router = express.Router();
-// router.use(verifyJWT, verfiyRole(roles.admin));
+router.use(verifyJWT, verfiyRole(roles.admin, roles.lecture));
 router.route("/").get(getUsers);
 router.route("/:id").patch(updateUser).delete(deleteUser);
 

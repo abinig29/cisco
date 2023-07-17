@@ -1,5 +1,5 @@
-import { Store } from "./app/store";
-import { courseApiSlice } from "./features/courses/courseApiSillce";
+import { Store } from "../app/store";
+import { courseApiSlice } from "../features/courses/courseApiSillce";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 

@@ -1,5 +1,4 @@
 const errorHandlerMiddleware = (err, req, res, next) => {
-  console.log(err);
   const defaultError = {
     statusCode: err.statusCode || 500,
     msg: err.message || "Something went wrong, try again later",
@@ -15,7 +14,9 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     defaultError.msg = `${Object.keys(err.keyValue)} field has to be unique`;
   }
 
-  res.status(defaultError.statusCode).json({ msg: defaultError.msg });
+  res
+    .status(defaultError.statusCode)
+    .json({ message: defaultError.msg, isError: true });
 };
 
 export default errorHandlerMiddleware;

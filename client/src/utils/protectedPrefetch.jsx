@@ -1,5 +1,6 @@
-import { Store } from "./app/store";
-import { userApiSlice } from "./features/user/userApiSlice"
+import { Store } from "../app/store";
+import { registreeApiSlice } from "../features/registree/registreeApiSlice";
+import { userApiSlice } from "../features/user/userApiSlice"
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -9,8 +10,12 @@ const ProtectedPrefetch = () => {
         const users = Store.dispatch(
             userApiSlice.endpoints.getUsers.initiate()
         );
+        const registree = Store.dispatch(
+            registreeApiSlice.endpoints.getRegistrees.initiate()
+        );
         return () => {
             users.unsubscribe();
+            registree.unsubscribe()
         };
     }, []);
 

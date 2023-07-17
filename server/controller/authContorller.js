@@ -34,10 +34,10 @@ export const login = async (req, res) => {
   res.cookie("Jwt", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "None",
+    sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000,
   });
-  res.status(200).json(accessToken);
+  res.status(200).json({ accessToken, user });
 };
 
 //@desc logut
@@ -46,7 +46,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   const Jwt = req.cookies?.Jwt;
   if (!Jwt) return res.status(204);
-  res.clearCookie("Jwt", { httpOnly: true, sameSite: "None", secure: true });
+  res.clearCookie("Jwt", { httpOnly: true, sameSite: "none", secure: true });
   res.json({ message: "Cookie cleared" });
 };
 
@@ -54,6 +54,7 @@ export const logout = async (req, res) => {
 //@method GEt  /auth/refresh
 //@access public
 export const refreshToken = async (req, res) => {
+  console.log("blaha", req.cookies);
   const Jwt = req.cookies?.Jwt;
   if (!Jwt) throw new UnAuthenticatedError("Invalid credential");
   jwt.verify(Jwt, process.env.JWT_REFRESH_SECRET, async (err, decode) => {
@@ -68,6 +69,7 @@ export const refreshToken = async (req, res) => {
       process.env.JWT_ACCESS_EXP
     );
     res.status(200).json(accessToken);
+    console.log("jkdfhsdfugjdfbd---->", accessToken);
   });
 };
 const generateToken = (res, user, secretKey, expire) => {

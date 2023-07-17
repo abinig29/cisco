@@ -1,21 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import SideBarNavigation from './sideBarNavigation'
 import DashbordHeader from './dashbordHeader'
 
 const DashBoardlayout = () => {
+    const [openSidebar, setOpenSidebar] = useState(false)
+
+    const onClik = () => {
+        setOpenSidebar(pre => !pre)
+    }
     return (
-        <div className='grid grid-cols-7'>
-            <div className="col-span-1 py-4 bg-gray-700">
-                <div className='fixed h-screen '>
-                    {<SideBarNavigation />}
+        <div className='flex '>
+            {<SideBarNavigation open={openSidebar} onClick={onClik} />}
+            <div className=' flex-1 min-h-screen bg-gray-800'>
+                <div className='flex'>
+                    <div className=' hidden sm:block w-[200px]' />
+                    <div className='flex-1'>
+                        <DashbordHeader onClick={onClik} />
+                        {<Outlet />}
+                    </div>
                 </div>
             </div>
-            <div className='col-span-6 min-h-screen bg-gray-800'>
-                {/* <DashbordHeader /> */}
-                {<Outlet />}
-            </div>
-        </div>
+        </div >
     )
 }
 

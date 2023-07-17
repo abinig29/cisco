@@ -3,16 +3,17 @@ import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 
 const coursesAdapter = createEntityAdapter();
 const courseIntialState = coursesAdapter.getInitialState();
-const boudary = "------WebKitFormBoundaryE4UqueJ6YJh4pOrA";
 
 export const courseApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCourses: builder.query({
-      query: () => ({
-        url: "/course",
-        ValidityState: (response, result) =>
-          response.status === 200 && !result.error,
-      }),
+      query: (query) => {
+        return {
+          url: "/course",
+          ValidityState: (response, result) =>
+            response.status === 200 && !result.error,
+        };
+      },
       transformResponse: (response) => {
         const courses = response.courses.map((course) => {
           course.id = course._id;
@@ -21,10 +22,13 @@ export const courseApiSlice = apiSlice.injectEndpoints({
         });
         return coursesAdapter.setAll(courseIntialState, courses);
       },
-      providesTags: (result, error, arg) => [
-        { type: "Course", id: "All" },
-        ...result.ids.map((id) => ({ type: "Course", id })),
-      ],
+      providesTags: (result, error, arg) => {
+        if (!result?.ids) return [{ type: "Course", id: "All" }];
+        return [
+          { type: "Course", id: "All" },
+          ...result.ids.map((id) => ({ type: "Course", id })),
+        ];
+      },
     }),
     createCourse: builder.mutation({
       query: (course) => {
@@ -38,19 +42,26 @@ export const courseApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [{ type: "Course", id: "All" }],
     }),
     updateCourse: builder.mutation({
-      query: (course, id) => ({
-        url: `/course/${id}`,
-        method: "PATCH",
-        body: course,
-        formData: true,
-      }),
+      query: ({ course, id }) => {
+        for (const [name, value] of course.entries()) {
+          console.log(`${name}: ${value}`);
+        }
+        return {
+          url: `/course/${id}`,
+          method: "PATCH",
+          body: course,
+          formData: true,
+        };
+      },
       invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
     }),
     deleteCourse: builder.mutation({
-      query: (id) => ({
-        url: `/course/${id}`,
-        method: "DELETE",
-      }),
+      query: (id) => {
+        return {
+          url: `/course/${id}`,
+          method: "DELETE",
+        };
+      },
       invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
     }),
   }),

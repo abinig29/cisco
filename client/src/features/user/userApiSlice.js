@@ -20,10 +20,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
         });
         return usersAdapter.setAll(userIntialState, users);
       },
-      providesTags: (result, error, arg) => [
-        { type: "User", id: "All" },
-        ...result.ids.map((id) => ({ type: "User", id })),
-      ],
+      providesTags: (result, error, arg) => {
+        if (!result?.ids) return [{ type: "User", id: "All" }];
+        return [
+          { type: "User", id: "All" },
+          ...result.ids.map((id) => ({ type: "User", id })),
+        ];
+      },
     }),
     createUser: builder.mutation({
       query: (user) => {
@@ -37,12 +40,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [{ type: "User", id: "All" }],
     }),
     updateUser: builder.mutation({
-      query: (user, id) => ({
-        url: `/user/${id}`,
-        method: "PATCH",
-        body: user,
-        formData: true,
-      }),
+      query: ({ user, id }) => {
+        return {
+          url: `/user/${id}`,
+          method: "PATCH",
+          body: user,
+          formData: true,
+        };
+      },
       invalidatesTags: (result, error, arg) => [{ type: "User", id: arg.id }],
     }),
     deleteUser: builder.mutation({

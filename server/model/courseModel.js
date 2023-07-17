@@ -15,6 +15,10 @@ const courseSchema = new mongoose.Schema(
     description: String,
     shortDescription: String,
     picture: String,
+    price: {
+      type: Number,
+      required: [true, "must provide price"],
+    },
     lecture: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",

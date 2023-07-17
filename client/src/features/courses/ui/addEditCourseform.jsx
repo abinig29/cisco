@@ -9,10 +9,14 @@ import { courseSchema } from '../schema';
 import { FaStarOfLife } from 'react-icons/fa'
 import { useCreateCourseMutation, useUpdateCourseMutation } from '../courseApiSillce';
 import { useNavigate, } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectRole } from '../../auth/authSlice';
+import { ROLES } from '../../../utils/utils';
 
 
 
-const AddCreateCourseForm = ({ update, course }) => {
+const AddCreateCourseForm = ({ update, course, lectures }) => {
+    const isAdmin = useSelector(selectRole) === ROLES.admin
 
     const navigate = useNavigate()
     const [createCourse, { isError, error, isSuccess, isLoading }] = useCreateCourseMutation()
@@ -21,7 +25,7 @@ const AddCreateCourseForm = ({ update, course }) => {
         if (isSuccess || isUpdateSuccess) {
             navigate('/dash/courses', { replace: true })
         }
-    }, [isSuccess, navigate])
+    }, [isSuccess, isUpdateSuccess, navigate])
 
 
 
@@ -62,14 +66,13 @@ const AddCreateCourseForm = ({ update, course }) => {
 
 
 
-    // lecture
-    const lectures = [{ id: '64ad59bc46396f00fa9f681c', name: 'abel' }, { id: "64ad59bc46396f00fa9f681d", name: "dese" }]
+
     const options = lectures.map(user => {
         return (
             <option
                 key={user.id}
                 value={user.id}
-            > {user.name}</option >
+            > {user.firstName}</option >
         )
     })
     const handleLectureChange = (event) => {
@@ -80,19 +83,18 @@ const AddCreateCourseForm = ({ update, course }) => {
 
 
     const onSubmit = async (values, { resetForm }) => {
-        const course = new FormData();
+        const courseData = new FormData();
         for (let value in values) {
-            course.append(value, values[value])
+            courseData.append(value, values[value])
         }
         if (update) {
             if (!values.endDate) {
-                course.delete('endDate');
-                course.append(endDate, course.endDate)
+                courseData.delete('endDate');
+
 
             }
             if (!values.picture) {
-                course.delete('picture');
-                course.append(picture, course.picture)
+                courseData.delete('picture');
             }
 
         }
@@ -102,17 +104,17 @@ const AddCreateCourseForm = ({ update, course }) => {
         const coverdTopicsLable = []
 
         coverdTopics.forEach(topic => coverdTopicsLable.push(topic.lable))
-        course.append('topics', topicsLable)
-        course.append('coverdTopics', coverdTopicsLable)
+        courseData.append('topics', topicsLable)
+        courseData.append('coverdTopics', coverdTopicsLable)
 
 
 
         try {
             if (update) {
-                await updateCourse(course, course.id).unwrap()
+                await updateCourse({ course: courseData, id: course.id }).unwrap()
             }
             else {
-                await createCourse(course).unwrap()
+                await createCourse(courseData).unwrap()
             }
 
         } catch (error) {
@@ -124,6 +126,7 @@ const AddCreateCourseForm = ({ update, course }) => {
     const initialValues = {
         courseName: update ? course?.courseName : "",
         courseCode: update ? course?.courseCode : "",
+        price: update ? course?.price : "",
         endDate: null,
         picture: "",
         shortDescription: update ? course?.shortDescription : "",
@@ -132,7 +135,7 @@ const AddCreateCourseForm = ({ update, course }) => {
     }
     const { touched, errors, values, setFieldValue, handleSubmit, getFieldProps } = useFormik({
         initialValues,
-        validationSchema: courseSchema,
+        validationSchema: courseSchema(update),
         onSubmit
     });
 
@@ -211,8 +214,8 @@ const AddCreateCourseForm = ({ update, course }) => {
                 </div>
                 <div className='flex-1 '>
                     <button class="py-2.5 px-5 mr-2 text-sm font-medium  rounded-lg cursor-pointer mb-2   items-center opacity-0">create course</button>
-                    <label className="block mb-2 text-sm font-medium  text-white">Select end date <span>{<FaStarOfLife className=' text-red-900 text-[10px] inline ml-1' />}</span></label>
-                    <div className='mb-2 inline-flex rounded bg-gray-700  text-white items-center gap-3 border border-gray-600'>
+                    <label className="block mb-2 text-sm font-medium  text-white">Select end date <span>{!update && <FaStarOfLife className=' text-red-900 text-[10px] inline ml-1' />}</span></label>
+                    <div className='mb-2 inline-flex rounded bg-gray-700  text-white items-center gap-3 border border-gray-600 w-full'>
                         <BsCalendar2DateFill className='text-[30px] mx-2' />
                         <DatePicker
                             onChange={(date) => setFieldValue('endDate', date)}
@@ -223,16 +226,22 @@ const AddCreateCourseForm = ({ update, course }) => {
                         />
                     </div>
                     {touched.endDate && errors.endDate && <p className="text-sm text-red-600 dark:text-red-500 mb-2">{errors.endDate}</p>}
-
-                    <div className='w-[31vw]'>
+                    <div className="mb-4">
+                        <label for="price" className="block mb-2 text-sm font-medium  text-white">Course price <span>{<FaStarOfLife className=' text-red-900 text-[10px] inline ml-1' />}</span></label>
+                        <input
+                            type="number"
+                            {...getFieldProps('price')} id="price" className=" border text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white " placeholder="3000" />
+                        {touched.price && errors.price && <p className="text-sm text-red-600 dark:text-red-500">{errors.price}</p>}
+                    </div>
+                    {<div className='w-full'>
                         <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Lectures<span>{<FaStarOfLife className=' text-red-900 text-[10px] inline ml-2' />}</span></label>
-                        <select id="countries" multiple onChange={handleLectureChange} {...getFieldProps('lecture')} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <select disabled={!isAdmin} id="countries" multiple onChange={handleLectureChange} {...getFieldProps('lecture')} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             {options}
                         </select>
                         {touched.lecture && errors.lecture && (
                             <div className="text-sm text-red-600 dark:text-red-500 mb-2">{errors.lecture}</div>
                         )}
-                    </div>
+                    </div>}
 
                     <div className='flex items-start flex-col   w-full mb-3 '>
 

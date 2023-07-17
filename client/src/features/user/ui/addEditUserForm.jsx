@@ -6,7 +6,7 @@ import { FiUploadCloud } from 'react-icons/fi'
 import { useFormik } from 'formik';
 import { userSchema } from '../userSchema';
 import { FaStarOfLife } from 'react-icons/fa'
-import { ROLES } from '../../../utils'
+import { ROLES } from '../../../utils/utils'
 
 import { useNavigate, } from 'react-router-dom';
 import { useCreateUserMutation, useUpdateUserMutation } from '../userApiSlice';
@@ -14,7 +14,6 @@ import { useCreateUserMutation, useUpdateUserMutation } from '../userApiSlice';
 
 
 const AddCreateUserForm = ({ update, user }) => {
-
     const navigate = useNavigate()
     const [createUser, { isError, error, isSuccess, isLoading }] = useCreateUserMutation()
     const [updateUser, { isError: isUpdateError, error: updateError, isSuccess: isUpdateSuccess, isLoading: isUpdateLoading }] = useUpdateUserMutation()
@@ -31,27 +30,30 @@ const AddCreateUserForm = ({ update, user }) => {
             > {role}</option >
         )
     })
-
+    if (isError) {
+        console.log(error)
+    }
     const onSubmit = async (values, { resetForm }) => {
-        console.log(values)
-        const user = new FormData();
+
+        const userData = new FormData();
         for (let value in values) {
-            user.append(value, values[value])
+            userData.append(value, values[value])
         }
         if (update) {
             if (!values.password) {
-                user.delete('endDate');
+                userData.delete('password');
             }
             if (!values.picture) {
-                user.delete('picture');
+                userData.delete('picture');
             }
         }
         try {
             if (update) {
-                await updateUser(user, user.id).unwrap()
+
+                await updateUser({ user: userData, id: user.id }).unwrap()
             }
             else {
-                await createUser(user).unwrap()
+                await createUser(userData).unwrap()
             }
             resetForm()
 
@@ -86,7 +88,7 @@ const AddCreateUserForm = ({ update, user }) => {
     return (
         <form onSubmit={handleSubmit} >
 
-            <div className='flex flex-col md:flex-row  gap-10 mx-10 mt-[50px]'>
+            <div className='flex flex-col md:flex-row  gap-10 mx-10 mt-[30px]'>
                 <div className='flex-1'>
 
                     <button type="submit" class="py-2.5 px-5 mr-2 text-sm font-medium  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center">
@@ -100,6 +102,7 @@ const AddCreateUserForm = ({ update, user }) => {
                             </> : update ? "Update user" : "Create user"
                         }
                     </button>
+                    {isError && <h5 className='text-sm text-red-600 text-center'>{error?.data?.message}</h5>}
 
                     <div className="mb-4">
                         <label for="firstName" className="block mb-2 text-sm font-medium  text-white">First name <span>{<FaStarOfLife className=' text-red-900 text-[10px] inline ml-1' />}</span></label>

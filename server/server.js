@@ -17,13 +17,16 @@ import {
   courseRouter,
   userRouter,
   authRouter,
+  registreeRouter,
 } from "./route/index.js";
-import { createCourse } from "./controller/courseController.js";
+
+import { createCourse, updateCourse } from "./controller/courseController.js";
 import notFoundMiddleware from "./middleware/notfound.js";
 import errorHandlerMiddleware from "./middleware/errorHandler.js";
 import corsOptions from "./config/corsOption.js";
 
-import { createUser } from "./controller/userController.js";
+import { createUser, updateUser } from "./controller/userController.js";
+import { createRegistree } from "./controller/registreeController.js";
 /* CONFIG */
 
 const __filename = fileURLToPath(import.meta.url);
@@ -60,10 +63,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
-// app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
-app.post("/api/v1/course", upload.single("picture"), createCourse);
-// app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
-app.post("/api/v1/user", upload.single("picture"), createUser);
+app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
+app.patch(
+  "/api/v1/course/:id",
+  verifyJWT,
+  upload.single("picture"),
+  updateCourse
+);
+app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
+app.patch("/api/v1/user/:id", upload.single("picture"), updateUser);
+app.post("/api/v1/registree", upload.single("picture"), createRegistree);
 
 /* ROUTES */
 
@@ -71,6 +80,7 @@ app.use("/", rootRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/registree", registreeRouter);
 
 /* ERROR HANDLER */
 

@@ -7,16 +7,12 @@ import mongoose from "mongoose";
 //@method GET  /course
 //@access public
 export const getCourses = async (req, res) => {
+  const query = req.query;
+  const tempQuery = {};
+  if (query.lecture) tempQuery.lecture = { $in: [req.user] };
   const courses = await Course.find().lean();
   if (!courses?.length) throw new NotFoundError("No course was found");
-  // const formatedCourses = await Promise.all(
-  //   courses.map(async (course) => {
-  //     const formatedLectures = await Promise.all(
-  //       course.lecture.map((lecture) => User.findOne({ lecture }).lean().exec())
-  //     );
-  //     return { ...course, lecture: formatedLectures };
-  //   })
-  // );
+
   res.status(200).json({ courses: courses });
 };
 
@@ -49,7 +45,7 @@ export const deleteCourse = async (req, res) => {
   const { id } = req.params;
   const course = await Course.findById(id).exec();
   if (!course) throw new BadRequestError("No course was found");
-  const deletedCourse = await User.deleteOne();
+  const deletedCourse = await course.deleteOne();
   res.status(204).json({
     message: `Course with code ${deletedCourse.courseCode}is deleted successfully`,
   });
@@ -89,12 +85,19 @@ export const coverTopic = async (req, res) => {
 //@access private
 export const updateCourse = async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.user;
+  const userId = req.user;
+  const role = req.role;
+  console.log(req.body);
   const course = await Course.findById(id).lean().exec();
   if (!course) throw new BadRequestError("No course found");
-  if (!course.lecture.includes(userId))
+  if (!role == "Admin" && !course.lecture.includes(userId))
     throw new BadRequestError("Cannot update courses other than yours");
-  const updatedCourse = await User.findByIdAndUpdate(id, req.body, {
+  const body = {
+    ...req.body,
+    topics: req.body.topics ? req.body.topics.split(",") : [],
+    coverdTopics: req.body.coverdTopics ? req.body.coverdTopics.split(",") : [],
+  };
+  const updatedCourse = await Course.findByIdAndUpdate(id, body, {
     new: true,
   });
   if (updatedCourse) {

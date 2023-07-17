@@ -21,6 +21,10 @@ const registreeSchema = new mongoose.Schema(
       type: String,
       required: [true, "you must provide bill photo"],
     },
+    status: {
+      type: Boolean,
+      default: false,
+    },
     course: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
