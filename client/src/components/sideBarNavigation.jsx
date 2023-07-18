@@ -19,8 +19,9 @@ const SideBarNavigation = ({ open, onClick }) => {
     const isAdmin = role === "Admin"
     const handleLogout = async () => {
         try {
-            await sendLogout()
             navigate('/login')
+            await sendLogout()
+            console.log("samri")
         } catch (error) {
 
         }
