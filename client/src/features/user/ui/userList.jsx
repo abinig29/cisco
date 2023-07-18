@@ -18,7 +18,7 @@ const UsersList = () => {
             <div>
                 <div className='px-10 py-6 flex justify-between '>
                     <h1 className='font-bold font-poppins text-4xl text-white'>Courses</h1>
-                    <button onClick={() => navigate("create",)} className='px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg'>Add New Course</button>
+                    <button onClick={() => navigate("create",)} className='px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg'>Add New User</button>
                 </div>
                 <h3>{error?.data?.message}</h3>
             </div>
@@ -50,7 +50,7 @@ const UsersList = () => {
         <div>
             <div className='px-10 py-6 flex justify-between '>
                 <h1 className='font-bold font-poppins text-4xl text-white'>Courses</h1>
-                <button onClick={() => navigate("create",)} className='px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg'>Add New Course</button>
+                <button onClick={() => navigate("create",)} className='px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg'>Add New User</button>
             </div>
 
             <div className="relative overflow-x-auto  ">

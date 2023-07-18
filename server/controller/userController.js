@@ -44,7 +44,11 @@ export const updateUser = async (req, res) => {
     const hashedPass = await bcrypt.hash(req.body.password, salt);
     req.body.password = hashedPass;
   }
-  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    { ...req.body, picture: req.file?.filename },
+    { new: true }
+  );
   // console.log(updatedUser);
   if (updatedUser) {
     res.status(200).json(updatedUser);
