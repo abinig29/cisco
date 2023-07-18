@@ -10,6 +10,7 @@ const PublicPageCourseGrid = () => {
         refetchOnMountOrArgChange: true
     })
     const navigate = useNavigate()
+    console.log(courses)
 
     const allCoursesIds = useSelector(selectIds).length >= 3 ? useSelector(selectIds).slice(0, 3) : useSelector(selectIds)
     if (isLoading) {
