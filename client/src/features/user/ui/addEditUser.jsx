@@ -1,33 +1,44 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import AddCreateUserForm from './addEditUserForm'
-import { selectUserbyId } from '../userApiSlice'
-import { Oval } from 'react-loader-spinner'
+import React from "react";
+import { useParams } from "react-router-dom";
+import AddCreateUserForm from "./addEditUserForm";
+import { useGetUsersQuery } from "../userApiSlice";
+import { Oval } from "react-loader-spinner";
+import { NotFound } from "../../../components/notFound";
 
 const AddEditUser = () => {
-    const { id } = useParams()
-    let update = false
-    if (id) update = true
-    const user = useSelector(state => selectUserbyId(state, id))
+  const { id } = useParams();
+  let update = false;
+  if (id) update = true;
+  const { data: users, isLoading } = useGetUsersQuery({});
+  const user = users?.users.find((user) => user._id === id);
 
-    return update ? user ? <AddCreateUserForm user={user} update={update} /> :
-        <div className='grid place-content-center  h-screen'>
-            <Oval
-                height={120}
-                width={120}
-                color="#4fa94d"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={true}
-                ariaLabel='oval-loading'
-                secondaryColor="#4fa94d"
-                strokeWidth={2}
-                strokeWidthSecondary={2}
+  if (isLoading)
+    return (
+      <div className="grid place-content-center  h-screen">
+        <Oval
+          height={60}
+          width={60}
+          color="#4fa94d"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+          ariaLabel="oval-loading"
+          secondaryColor="#4fa94d"
+          strokeWidth={2}
+          strokeWidthSecondary={2}
+        />
+      </div>
+    );
 
-            />
-        </div> : < AddCreateUserForm user={user} update={update} />
+  return update ? (
+    user ? (
+      <AddCreateUserForm user={user} update={update} />
+    ) : (
+      <NotFound />
+    )
+  ) : (
+    <AddCreateUserForm user={user} update={update} />
+  );
+};
 
-}
-
-export default AddEditUser
+export default AddEditUser;

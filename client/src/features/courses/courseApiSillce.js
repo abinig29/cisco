@@ -1,32 +1,21 @@
 import { apiSlice } from "../../app/api/apiSlice";
-import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
-
-const coursesAdapter = createEntityAdapter();
-const courseIntialState = coursesAdapter.getInitialState();
 
 export const courseApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCourses: builder.query({
-      query: (query) => {
-        return {
-          url: "/course",
-          ValidityState: (response, result) =>
-            response.status === 200 && !result.error,
-        };
-      },
-      transformResponse: (response) => {
-        const courses = response.courses.map((course) => {
-          course.id = course._id;
-          delete course._id;
-          return course;
-        });
-        return coursesAdapter.setAll(courseIntialState, courses);
-      },
+      query: () => ({
+        url: "/course",
+        ValidityState: (response, result) =>
+          response.status === 200 && !result.error,
+      }),
       providesTags: (result, error, arg) => {
-        if (!result?.ids) return [{ type: "Course", id: "All" }];
+        if (!result?.courses) return [{ type: "Course", id: "All" }];
         return [
           { type: "Course", id: "All" },
-          ...result.ids.map((id) => ({ type: "Course", id })),
+          ...result.courses.map((course) => ({
+            type: "Course",
+            id: course._id,
+          })),
         ];
       },
     }),
@@ -39,13 +28,10 @@ export const courseApiSlice = apiSlice.injectEndpoints({
           formData: true,
         };
       },
-      invalidatesTags: [{ type: "Course", id: "All" }],
+      invalidatesTags: [{ type: "Course", id: "All" },{ type: "Catagory", id: "All" },],
     }),
     updateCourse: builder.mutation({
       query: ({ course, id }) => {
-        for (const [name, value] of course.entries()) {
-          console.log(`${name}: ${value}`);
-        }
         return {
           url: `/course/${id}`,
           method: "PATCH",
@@ -53,7 +39,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
           formData: true,
         };
       },
-      invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id },{ type: "Catagory", id: "All" },],
     }),
     deleteCourse: builder.mutation({
       query: (id) => {
@@ -62,7 +48,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
           method: "DELETE",
         };
       },
-      invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id },{ type: "Catagory", id: "All" },],
     }),
   }),
 });
@@ -73,22 +59,3 @@ export const {
   useUpdateCourseMutation,
   useDeleteCourseMutation,
 } = courseApiSlice;
-const courseResultSelector = courseApiSlice.endpoints.getCourses.select();
-
-const memoizedSelector = createSelector(
-  courseResultSelector,
-  (courseResult) => courseResult.data
-);
-export const {
-  selectAll: selectAllCourses,
-  selectById: selectCoursebyId,
-  selectIds,
-} = coursesAdapter.getSelectors(
-  (state) => memoizedSelector(state) ?? courseIntialState
-);
-
-export const selectLectureCourses = createSelector(
-  [selectAllCourses, (state, userId) => userId],
-  (allCourses, userId) =>
-    allCourses.filter((course) => course.lecture.includes(userId))
-);

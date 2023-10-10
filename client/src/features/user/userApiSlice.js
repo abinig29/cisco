@@ -1,8 +1,4 @@
 import { apiSlice } from "../../app/api/apiSlice";
-import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
-
-const usersAdapter = createEntityAdapter();
-const userIntialState = usersAdapter.getInitialState();
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,19 +8,11 @@ export const userApiSlice = apiSlice.injectEndpoints({
         ValidityState: (response, result) =>
           response.status === 200 && !result.error,
       }),
-      transformResponse: (response) => {
-        const users = response.map((user) => {
-          user.id = user._id;
-          delete user._id;
-          return user;
-        });
-        return usersAdapter.setAll(userIntialState, users);
-      },
       providesTags: (result, error, arg) => {
-        if (!result?.ids) return [{ type: "User", id: "All" }];
+        if (!result?.users) return [{ type: "User", id: "All" }];
         return [
           { type: "User", id: "All" },
-          ...result.ids.map((id) => ({ type: "User", id })),
+          ...result.users.map((user) => ({ type: "User", id:user._id })),
         ];
       },
     }),
@@ -67,21 +55,3 @@ export const {
   useDeleteUserMutation,
 } = userApiSlice;
 const userResultSelector = userApiSlice.endpoints.getUsers.select();
-
-const memoizedSelector = createSelector(
-  userResultSelector,
-  (userResult) => userResult.data
-);
-export const {
-  selectAll: selectAllUsers,
-  selectById: selectUserbyId,
-  selectIds,
-} = usersAdapter.getSelectors(
-  (state) => memoizedSelector(state) ?? userIntialState
-);
-
-// export const selectLectureCourses = createSelector(
-//   [selectAllCourses, (state, userId) => userId],
-//   (allCourses, userId) =>
-//     allCourses.filter((course) => course.lecture.includes(userId))
-// );

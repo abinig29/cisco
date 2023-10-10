@@ -11,10 +11,10 @@ const DashBoardlayout = () => {
     }
     return (
         <div className='flex '>
-            {<SideBarNavigation open={openSidebar} onClick={onClik} />}
+            {<SideBarNavigation open={openSidebar} onClick={onClik} setOpenSidebar={setOpenSidebar} />}
             <div className=' flex-1 min-h-screen bg-gray-800'>
                 <div className='flex'>
-                    <div className=' hidden sm:block w-[200px]' />
+                    <div className=' hidden sm:block w-[250px]' />
                     <div className='flex-1'>
                         <DashbordHeader onClick={onClik} />
                         {<Outlet />}

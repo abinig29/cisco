@@ -13,7 +13,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     defaultError.statusCode = 400;
     defaultError.msg = `${Object.keys(err.keyValue)} field has to be unique`;
   }
-
+  console.log(defaultError.msg)
   res
     .status(defaultError.statusCode)
     .json({ message: defaultError.msg, isError: true });

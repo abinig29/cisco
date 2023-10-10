@@ -20,11 +20,16 @@ export const createRegistree = async (req, res) => {
 //@method GET /registree
 //@access private
 export const getRegistrees = async (req, res) => {
-  const users = await Registree.find().sort("-createdAt").exec();
-  if (!users?.length) {
-    throw new NotFoundError("No user");
-  }
-  res.status(200).json(users);
+  const query = req.query;
+  const temp = {};
+
+  if (query.courseId) temp.course = query.courseId;
+  const users = await Registree.find(temp)
+    .sort("-createdAt")
+    .populate({ path: "course", select: "courseName" })
+    .exec();
+  console.log({ users });
+  res.status(200).json({ registree: users });
 };
 
 //@desc update registree

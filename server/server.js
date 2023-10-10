@@ -18,6 +18,8 @@ import {
   userRouter,
   authRouter,
   registreeRouter,
+  catagoryRouter,
+  newsRouter,
 } from "./route/index.js";
 
 import { createCourse, updateCourse } from "./controller/courseController.js";
@@ -27,12 +29,13 @@ import corsOptions from "./config/corsOption.js";
 
 import { createUser, updateUser } from "./controller/userController.js";
 import { createRegistree } from "./controller/registreeController.js";
+import { createNews, updateNews } from "./controller/newsController.js";
 /* CONFIG */
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 const app = express();
 if ((process.env.NODE_ENV = "development")) {
   app.use(morgan("common"));
@@ -64,15 +67,18 @@ const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
 app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
+app.post("/api/v1/news",  upload.single("picture"), createNews);
+app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
+app.post("/api/v1/registree", upload.single("picture"), createRegistree);
+
 app.patch(
   "/api/v1/course/:id",
   verifyJWT,
   upload.single("picture"),
   updateCourse
 );
-app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
 app.patch("/api/v1/user/:id", upload.single("picture"), updateUser);
-app.post("/api/v1/registree", upload.single("picture"), createRegistree);
+app.patch("/api/v1/news/:id", upload.single("picture"), updateNews);
 
 /* ROUTES */
 
@@ -81,6 +87,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/registree", registreeRouter);
+app.use("/api/v1/catagory", catagoryRouter);
+app.use("/api/v1/news", newsRouter);
 
 /* ERROR HANDLER */
 

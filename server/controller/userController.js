@@ -28,7 +28,7 @@ export const getUsers = async (req, res) => {
   if (!users?.length) {
     throw new NotFoundError("No user");
   }
-  res.status(200).json(users);
+  res.status(200).json({users});
 };
 
 //@desc update users

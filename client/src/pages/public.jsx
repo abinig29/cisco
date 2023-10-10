@@ -29,7 +29,7 @@ const Public = () => {
                   Unlock your potential with Cisco's cutting-edge courses.
                   Expand your skills with industry-leading networking, cybersecurity, and programming training.
                 </h5>
-                <button onClick={() => navigate('/register')} className="px-6 bg-[#312964] text-white font-bold text-xl py-4 rounded-full">
+                <button onClick={() => navigate('/register')} className="px-6 bg-[#427cce] text-white font-bold text-xl py-4 rounded-full">
                   Get started
                 </button>
 

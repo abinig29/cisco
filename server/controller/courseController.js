@@ -2,6 +2,7 @@ import User from "../model/userModel.js";
 import Course from "../model/courseModel.js";
 import { BadRequestError, NotFoundError } from "../error/index.js";
 import mongoose from "mongoose";
+import Catagory from "../model/catagoryModel.js";
 
 //@desc get all courses
 //@method GET  /course
@@ -10,9 +11,9 @@ export const getCourses = async (req, res) => {
   const query = req.query;
   const tempQuery = {};
   if (query.lecture) tempQuery.lecture = { $in: [req.user] };
-  const courses = await Course.find().lean();
-  if (!courses?.length) throw new NotFoundError("No course was found");
-
+  const courses = await Course.find()
+    .populate({ path: "courseProvider", select: "catagoryName" })
+    .lean();
   res.status(200).json({ courses: courses });
 };
 
@@ -20,17 +21,28 @@ export const getCourses = async (req, res) => {
 //@method POST /course
 //@access private
 export const createCourse = async (req, res) => {
-  const { courseCode, topics, coverdTopics } = req.body;
+  const {
+    courseCode,
+    topics,
+    coverdTopics,
+    lecture,
+    courseProvider: catagoryId,
+  } = req.body;
   const duplicate = await Course.findOne({ courseCode });
   if (duplicate) throw new BadRequestError("Course dose exist");
+
+  const catagory = await Catagory.findById(catagoryId);
 
   let courseBody = {
     ...req.body,
     topics: topics ? topics.split(",") : [],
     coverdTopics: coverdTopics ? coverdTopics.split(",") : [],
+    lecture: lecture ? lecture.split(",") : [],
     picture: req.file?.filename,
   };
   const course = await Course.create(courseBody);
+  if (catagory) catagory.courses.push(course._id);
+  catagory?.save();
   if (course) {
     res.status(201).json(course);
   } else {
@@ -45,7 +57,16 @@ export const deleteCourse = async (req, res) => {
   const { id } = req.params;
   const course = await Course.findById(id).exec();
   if (!course) throw new BadRequestError("No course was found");
+  const catagory = await Catagory.findById(course.courseProvider);
   const deletedCourse = await course.deleteOne();
+  if (catagory) {
+    const indexToDelete = catagory.courses.indexOf(deletedCourse._id);
+    if (indexToDelete > -1) {
+      catagory.courses.splice(indexToDelete, 1);
+    }
+  }
+  catagory?.save();
+
   res.status(204).json({
     message: `Course with code ${deletedCourse.courseCode}is deleted successfully`,
   });
@@ -87,15 +108,28 @@ export const updateCourse = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
   const role = req.role;
-  console.log(req.body);
   const course = await Course.findById(id).lean().exec();
   if (!course) throw new BadRequestError("No course found");
   if (!role == "Admin" && !course.lecture.includes(userId))
     throw new BadRequestError("Cannot update courses other than yours");
+  const catagory = await Catagory.findById(course.courseProvider);
+  if (req.body.courseProvider != course.courseProvider) {
+    const indexToDelete = catagory.courses.indexOf(course._id);
+    if (indexToDelete > -1) {
+      catagory.courses.splice(indexToDelete, 1);
+    }
+    const newCatagory = await Catagory.findById(req.body.courseProvider);
+    newCatagory.courses.push(course._id);
+    catagory?.save();
+    newCatagory?.save();
+  }
+
   const body = {
     ...req.body,
+    lecture: req.body.lecture ? req.body.lecture.split(",") : [],
     topics: req.body.topics ? req.body.topics.split(",") : [],
     coverdTopics: req.body.coverdTopics ? req.body.coverdTopics.split(",") : [],
+    picture: req.file?.filename,
   };
   const updatedCourse = await Course.findByIdAndUpdate(id, body, {
     new: true,

@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { BsFillCartFill } from "react-icons/bs";
 import { HiMenu } from "react-icons/hi";
 import { GrClose } from "react-icons/gr";
-import ciscoLogo from '../assets/cisco-logo.png'
-
-
-
+import logo from "../assets/logo.png";
 
 const Header = () => {
   const [open, setOpen] = useState(true);
 
-
-
   return (
-    <section className=" bg-[#312964]">
+    <section className=" bg-[#427cce]">
       <div className="lg:max-w-[1280px] w-full mx-auto ">
         <nav className="flex items-center justify-between py-4 px-6">
-          <img src={ciscoLogo} alt="" className="w-[80px] p" />
-          <ul className=" justify-between gap-6 text-[18px] text-gray-500 md:flex hidden">
+          <img
+            src={logo}
+            alt=""
+            className="w-[200px] object-contain "
+          />
+          <ul className="  gap-4 text-[18px] text-gray-500 md:flex hidden">
             <NavLink className={"underline_decor text-white"} to="/">
               Home
             </NavLink>
@@ -28,11 +26,18 @@ const Header = () => {
             <NavLink className={"underline_decor text-white"} to="/register">
               Register
             </NavLink>
-            <NavLink className={"underline_decor text-white"} to="/login">
-              Are you staff member?
+            <NavLink className={"underline_decor text-white"} to="/news">
+              News
             </NavLink>
-
           </ul>
+          <NavLink
+            className={
+              "underline_decor text-white  md:block hidden text-[18px] "
+            }
+            to="/login"
+          >
+            Are you staff member?
+          </NavLink>
 
           <div
             className="block md:hidden cursor-pointer"
@@ -43,12 +48,13 @@ const Header = () => {
             <HiMenu size={"25px"} />
           </div>
           <div
-            className={`md:hidden fixed  top-0 left-0 w-[300px]  h-[100vh] bg-[#423886] z-20  ${open ? `-translate-x-[100%]` : `-translate-x-[0%]`
-              } transition-all duration-500 ease-in-out`}
+            className={`md:hidden fixed  top-0 left-0 w-[300px]  h-[100vh] bg-[#423886] z-20  ${
+              open ? `-translate-x-[100%]` : `-translate-x-[0%]`
+            } transition-all duration-500 ease-in-out`}
           >
             <div className=" ">
               <div className="flex justify-between items-center px-10 py-2">
-                <img src={ciscoLogo} alt="" className="w-[80px] p-0" />
+                <img src={logo} alt="" className="w-[80px] p-0" />
                 <span
                   className="cursor-pointer"
                   onClick={() => {
@@ -73,7 +79,6 @@ const Header = () => {
                   }
                   to="/course"
                 >
-
                   Courses
                 </NavLink>
                 <NavLink
@@ -86,6 +91,14 @@ const Header = () => {
                 </NavLink>
                 <NavLink
                   className={
+                    "hover:pl-8 transition-all duration-300 text-white font-poppins p-5 hover:bg-[#2970af26]"
+                  }
+                  to="/news"
+                >
+                  News
+                </NavLink>
+                <NavLink
+                  className={
                     "hover:pl-8 transition-all duration-300 text-white  font-poppins p-5 hover:bg-[#2970af26]"
                   }
                   to="/login"
@@ -93,7 +106,6 @@ const Header = () => {
                   Are you staff member?
                 </NavLink>
               </ul>
-
             </div>
           </div>
         </nav>

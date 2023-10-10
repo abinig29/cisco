@@ -69,10 +69,10 @@ export const refreshToken = async (req, res) => {
       process.env.JWT_ACCESS_EXP
     );
     res.status(200).json(accessToken);
-    console.log("jkdfhsdfugjdfbd---->", accessToken);
   });
 };
 const generateToken = (res, user, secretKey, expire) => {
+  console.log(expire)
   const userInfo = {
     userId: user._id,
     role: user.role,

@@ -21,6 +21,14 @@ const registreeSchema = new mongoose.Schema(
       type: String,
       required: [true, "you must provide bill photo"],
     },
+    gender: {
+      type: String,
+      required: [true, "you must provide gender"],
+    },
+    registreeType: {
+      type: String,
+      required: [true, "you must provide registree type"],
+    },
     status: {
       type: Boolean,
       default: false,
