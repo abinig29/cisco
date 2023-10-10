@@ -4,7 +4,6 @@ import {
   useDeleteRegistreeMutation,
   useGetRegistreesQuery,
 } from "../registreeApiSlice";
-import RegistreeRow from "./registreeRow";
 import { Oval } from "react-loader-spinner";
 import BasicTable from "../../../components/table";
 import DeleteModal from "../../../components/deleteModal";
@@ -153,11 +152,17 @@ const FilteredRegistreeList = () => {
           onClick={() => setSlectModal((pre) => !pre)}
         ></div>
       </div>
-      <BasicTable data={registrees} columns={columns} filterKey={"firstName"} />
+      <BasicTable
+        data={registrees}
+        columns={columns}
+        filterKey={"firstName"}
+        keyToDisplay={"First name"}
+      />
       <DeleteModal
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
+        deletedItemName={'registree'}
       />
     </div>
   );

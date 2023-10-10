@@ -145,7 +145,6 @@ const RegistreeList = () => {
         </div>
       </Modal>
 
-      // <h3>{error?.data?.message}</h3>
     );
   }
   if (isLoading) {
@@ -199,11 +198,12 @@ const RegistreeList = () => {
           )}
         </div>
       </div>
-      <BasicTable data={registrees} columns={columns} filterKey={"firstName"} />
+      <BasicTable data={registrees} columns={columns} filterKey={"firstName"} keyToDisplay={'First name'} />
       <DeleteModal
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
+        deletedItemName={'registree'}
       />
     </div>
   );

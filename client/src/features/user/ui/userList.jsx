@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Oval } from "react-loader-spinner";
 
 import { useDeleteUserMutation, useGetUsersQuery } from "../userApiSlice.js";
-import UserRow from "./userRow.jsx";
 import { useNavigate } from "react-router-dom";
 import BasicTable from "../../../components/table.jsx";
 import DeleteModal from "../../../components/deleteModal.jsx";
@@ -154,6 +153,7 @@ const UsersList = () => {
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
+        deletedItemName={'user'}
       />
     </div>
   );

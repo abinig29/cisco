@@ -1,7 +1,12 @@
 import React from "react";
 import Modal from "./modal";
 
-const DeleteModal = ({ openModal, setOpenModal, onAction }) => {
+const DeleteModal = ({
+  openModal,
+  setOpenModal,
+  onAction,
+  deletedItemName,
+}) => {
   return (
     <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
       <button
@@ -43,7 +48,7 @@ const DeleteModal = ({ openModal, setOpenModal, onAction }) => {
           />
         </svg>
         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-          Are you sure you want to delete this news?
+          Are you sure you want to delete this {deletedItemName}?
         </h3>
         <button
           onClick={() => {

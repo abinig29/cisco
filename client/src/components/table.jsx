@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { MdOutlineArrowUpward, MdOutlineArrowDownward } from "react-icons/md";
 
-const BasicTable = ({ data, columns, filterKey }) => {
+const BasicTable = ({ data, columns, filterKey,keyToDisplay }) => {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
 
@@ -38,8 +38,8 @@ const BasicTable = ({ data, columns, filterKey }) => {
         type="text"
         value={table.getColumn(filterKey)?.getFilterValue() ?? ""}
         onChange={handleFilterChange}
-        className="border mb-4 mx-10 text-sm rounded-lg  block w-[200px] p-2.5 bg-gray-700 border-gray-600 text-white "
-        placeholder={`Filter with ${filterKey}`}
+        className="border mb-4 mx-10 text-sm rounded-lg  block w-[200px] p-2.5 bg-gray-700 border-gray-600 text-white  "
+        placeholder={`Filter with ${keyToDisplay??filterKey}`}
       />
       <table className="w-full  ">
         <thead>
@@ -49,7 +49,7 @@ const BasicTable = ({ data, columns, filterKey }) => {
                 <th
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
-                  className="px-4 py-2 bg-[#312964] text-gray-500   cursor-pointer"
+                  className="px-4 py-2 bg-[#312964] text-gray-500 text-xs   cursor-pointer"
                 >
                   {!header.isPlaceholder && (
                     <div>

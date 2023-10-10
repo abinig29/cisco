@@ -148,6 +148,7 @@ const NewsList = () => {
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
+        deletedItemName={'news'}
       />
     </div>
   );

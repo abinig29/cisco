@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
   useCreateCatagoryMutation,
+  useDeleteCatagoryMutation,
   useGetCatagoriesQuery,
   useUpdateCatagoryMutation,
 } from "../catagoryApiSlice";
-import { BsBoxArrowRight } from "react-icons/bs";
+import { AiOutlineSwapRight, AiFillDelete } from "react-icons/ai";
+import { IoAlertOutline } from "react-icons/io5";
 import { FaStarOfLife } from "react-icons/fa";
+import DeleteModal from "../../../components/deleteModal";
 
 export const CatagoryList = () => {
   const { data, isLoading: catagoryLoading } = useGetCatagoriesQuery({
@@ -14,6 +17,26 @@ export const CatagoryList = () => {
   });
   const [name, setName] = useState("");
   const [editingId, setEditingId] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [deletedId, setDeletedId] = useState("");
+  const [
+    deleteCatagory,
+    {
+      isError: deleteIsError,
+      error: deleteError,
+      isSuccess: deleteIsSuccess,
+      isLoading: deleteIsLoading,
+    },
+  ] = useDeleteCatagoryMutation();
+
+  const onDelete = async () => {
+    try {
+      await deleteCatagory(deletedId).unwrap();
+      setOpenModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [createCatagory, { isError, error, isSuccess, isLoading }] =
     useCreateCatagoryMutation();
   const [updateCatagory, { isLoading: updateLoading }] =
@@ -89,19 +112,40 @@ export const CatagoryList = () => {
         onChange={(e) => setName(e.target.value)}
         className=" border text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white max-w-[400px] "
       />
+      <div className="flex items-center text-gray-400/30">
+        <IoAlertOutline />
+        <h5 >click the catagory to edit its name</h5>
+      </div>
       <div className="mt-6 flex flex-col gap-4">
         {catagories?.map((catagory) => {
           return (
-            <div
-              className="max-w-[400px] text-white text-[26px] flex items-center gap-4 bg-gray-300/10 px-2 rounded cursor-pointer"
-              onClick={() => setEditingId(catagory._id)}
-            >
-              <BsBoxArrowRight />
-              {catagory.catagoryName}
+            <div className="flex items-center gap-4">
+              <div
+                className="max-w-[400px] flex-1 text-white text-[22px] flex items-center gap-4 bg-gray-300/10 px-2 rounded cursor-pointer"
+                onClick={() => setEditingId(catagory._id)}
+              >
+                <AiOutlineSwapRight />
+                {catagory.catagoryName}
+              </div>
+              <button
+                onClick={() => {
+                  setDeletedId(catagory._id);
+                  setOpenModal(true);
+                }}
+                className="bg-red-300 p-1 rounded-lg"
+              >
+                <AiFillDelete className="text-[22px] text-white" />
+              </button>
             </div>
           );
         })}
       </div>
+      <DeleteModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        onAction={onDelete}
+        deletedItemName={"Course provider"}
+      />
     </div>
   );
 };

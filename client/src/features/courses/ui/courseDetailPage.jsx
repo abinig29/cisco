@@ -8,6 +8,7 @@ import { useGetCoursesQuery } from "../courseApiSillce";
 import { NotFound } from "../../../components/notFound";
 import { CiCalendarDate } from "react-icons/ci";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { MdOutlineCrisisAlert } from "react-icons/md";
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -147,7 +148,9 @@ const CourseDetail = ({ course }) => {
                   );
                 })
               ) : (
-                <span className="text-gray-400 ml-2">When the course started, coverd topics will display here.</span>
+                <span className="text-gray-400 ml-2">
+                  When the course started, coverd topics will display here.
+                </span>
               )}
             </div>
           </div>
@@ -159,10 +162,16 @@ const CourseDetail = ({ course }) => {
                   return (
                     <div className=" gap-2 items-center grid grid-cols-2 bg-slate-200 rounded py-1 px-3">
                       <h3>{t.value}</h3>
-                      <h3 className="pl-4 font-poppins">{course[t.key]} Birr</h3>
+                      <h3 className="pl-4 font-poppins">
+                        {course[t.key]} Birr
+                      </h3>
                     </div>
                   );
                 })}
+                <div className="flex items-center text-[16px] text-gray-600">
+                  <MdOutlineCrisisAlert />
+                  <h3 className="">There is 15% discount to women</h3>
+                </div>
               </div>
             </div>
           </div>
