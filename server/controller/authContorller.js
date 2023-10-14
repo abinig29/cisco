@@ -46,7 +46,11 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   const Jwt = req.cookies?.Jwt;
   if (!Jwt) return res.status(204);
-  res.clearCookie("Jwt", { httpOnly: true, sameSite: "strict", secure: true });
+  res.clearCookie("Jwt", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV !== "development",
+  });
   res.json({ message: "Cookie cleared" });
 };
 
@@ -72,7 +76,7 @@ export const refreshToken = async (req, res) => {
   });
 };
 const generateToken = (res, user, secretKey, expire) => {
-  console.log(expire)
+  console.log(expire);
   const userInfo = {
     userId: user._id,
     role: user.role,
