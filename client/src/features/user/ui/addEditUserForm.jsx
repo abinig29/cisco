@@ -1,8 +1,6 @@
-import { useDropzone } from "react-dropzone";
 import React, { useEffect, useState } from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
-import { FiUploadCloud } from "react-icons/fi";
 import { useFormik } from "formik";
 import { userSchema } from "../userSchema";
 import { FaStarOfLife } from "react-icons/fa";
@@ -10,6 +8,7 @@ import { ROLES } from "../../../utils/utils";
 
 import { useNavigate } from "react-router-dom";
 import { useCreateUserMutation, useUpdateUserMutation } from "../userApiSlice";
+import UploadFile from "../../../components/uploadFile";
 
 const AddCreateUserForm = ({ update, user }) => {
   const navigate = useNavigate();
@@ -24,6 +23,7 @@ const AddCreateUserForm = ({ update, user }) => {
       isLoading: isUpdateLoading,
     },
   ] = useUpdateUserMutation();
+  const [doneUploading, setDoneUploading] = useState(false);
   useEffect(() => {
     if (isSuccess || isUpdateSuccess) {
       navigate("/dash/users", { replace: true });
@@ -39,21 +39,16 @@ const AddCreateUserForm = ({ update, user }) => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
-    const userData = new FormData();
-    for (let value in values) {
-      userData.append(value, values[value]);
-    }
+    const userData = { ...values };
+
     if (update) {
       if (!values.password) {
-        userData.delete("password");
-      }
-      if (!values.picture) {
-        userData.delete("picture");
+        delete userData.password;
       }
     }
     try {
       if (update) {
-        await updateUser({ user: userData, id: user.id }).unwrap();
+        await updateUser({ user: userData, id: user._id }).unwrap();
       } else {
         await createUser(userData).unwrap();
       }
@@ -65,7 +60,7 @@ const AddCreateUserForm = ({ update, user }) => {
     firstName: update ? user?.firstName : "",
     lastName: update ? user?.lastName : "",
     email: update ? user?.email : "",
-    picture: "",
+    picture: update ? user?.picture : "",
     role: update ? user?.role : "Lecture",
     password: "",
   };
@@ -82,12 +77,9 @@ const AddCreateUserForm = ({ update, user }) => {
     onSubmit,
   });
 
-  const onDrop = (acceptedFiles) => {
-    if (acceptedFiles?.length) {
-      acceptedFiles.map((file) => setFieldValue("picture", file));
-    }
-  };
-  const { isDragActive, getRootProps, getInputProps } = useDropzone({ onDrop });
+  useEffect(() => {
+    if (values.picture) setDoneUploading(true);
+  }, [values.picture]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -95,7 +87,8 @@ const AddCreateUserForm = ({ update, user }) => {
         <div className="flex-1">
           <button
             type="submit"
-            class="py-2.5 px-5 mr-2 text-sm font-medium  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+            disabled={isLoading || isUpdateLoading || !doneUploading}
+            class="py-2.5 px-5 mr-2 text-sm font-medium disabled:bg-[#31296471] disabled:cursor-not-allowed   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
           >
             {isLoading || isUpdateLoading ? (
               <>
@@ -257,28 +250,22 @@ const AddCreateUserForm = ({ update, user }) => {
               </div>
             )}
           </div>
-
-          <div
-            {...getRootProps({
-              className:
-                "w-full border-dashed border mt-4 cursor-pointer mb-4 h-[110px] text-white flex flex-col items-center justify-center",
-            })}
-          >
-            <input {...getInputProps()} />
-            {values.picture ? (
-              <>{values.picture.name}</>
-            ) : isDragActive ? (
-              <>Draging.... </>
-            ) : (
-              <div className=" py-3 flex flex-col items-center">
-                <FiUploadCloud className="text-[40px]" />
-                <h3>Drag and drop to upload</h3>
-                <h5>or browse</h5>
-              </div>
-            )}
-          </div>
         </div>
-        <div className="flex-1"></div>
+        <div className="flex-1">
+          <button class="py-2.5 px-5 mr-2 text-sm opacity-0 hidden font-mediu cursor-none   rounded-lg  mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white md:inline-flex items-center">
+            random
+          </button>
+          <UploadFile
+            setDoneUploading={setDoneUploading}
+            height={150}
+            textColor={"text-white"}
+            lable={"Cover photo"}
+            picture={values.picture}
+            imgTouched={touched.picture}
+            imgError={errors.picture}
+            setImg={(value) => setFieldValue("picture", value)}
+          />
+        </div>
       </div>
     </form>
   );

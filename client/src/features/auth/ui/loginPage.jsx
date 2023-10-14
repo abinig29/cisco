@@ -1,9 +1,8 @@
-import { replace, useFormik } from "formik";
+import {  useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { userSchema } from "../schema";
 import { useLoginMutation } from "../authApiSlice";
 import { useNavigate } from "react-router-dom";
-import Header from "../../../components/header";
 import r from "../../../assets/r-logo.png";
 
 
@@ -43,8 +42,7 @@ const Login = () => {
   }, [values]);
 
   return (
-    <div className="bg-slate-200 ">
-      <Header />
+    <div className="">
       <main className="grid place-content-center min-h-[calc(100vh-76px)] ">
         <div className="w-full  flex justify-center">
           <img src={r} alt="" className="w-[300px]" />

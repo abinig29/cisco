@@ -5,8 +5,6 @@ import { Outlet } from "react-router-dom";
 
 const Prefetch = () => {
   useEffect(() => {
-    console.log('jjj')
-
     const notes = Store.dispatch(
       courseApiSlice.endpoints.getCourses.initiate()
     );

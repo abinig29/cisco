@@ -13,3 +13,25 @@
   background-position: center;
   background-size: cover;
 }
+.about-bg {
+  background-image: url(./assets/about2.jpg);
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
+    url(./assets/about2.jpg);
+  background-position: center;
+  background-size: cover;
+}
+.no-scrollbar {
+  resize: none; /* Disable resizing */
+  overflow: hidden; /* Hide overflow */
+}
+.card-gradient {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 212, 255, 0.1316176128654587) 59%,
+    rgba(50, 155, 230, 0.1092086492800245) 79%
+  );
+}
+.bg-gradient {
+  background: linear-gradient(90deg, rgba(69,49,56,0.2660713943780637) 0%, rgba(50,147,230,0.33049716468618695) 48%);
+  
+}

@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Header from "../../../components/header";
 import { imgUrl, registreeType } from "../../../utils/utils";
 import { differenceInDays, parseISO } from "date-fns";
 import { Oval } from "react-loader-spinner";
@@ -64,16 +63,11 @@ const CourseDetail = ({ course }) => {
   const classStyle = remainingDays > 0 ? "left" : "passed";
   return (
     <div className="bg-slate-100 min-h-screen">
-      <Header />
       <div className="lg:max-w-[1280px] w-full mx-auto p-10 ">
         <div className="flex flex-col md:flex-row gap-8">
           <div className="flex-[3] flex gap-4 flex-col sm:flex-row">
             <div className="flex-1 relative">
-              <img
-                className="w-full"
-                src={`${imgUrl}${course.picture}`}
-                alt=""
-              />
+              <img className="w-full" src={course.picture} alt="course-cover page" />
               <h5
                 className={`w-[100px] h-[100px] rounded-full flex justify-center items-center ${
                   classStyle === "passed" ? `bg-red-600` : `bg-green-400`
@@ -115,7 +109,7 @@ const CourseDetail = ({ course }) => {
             </div>
             <button
               onClick={() => navigate(`/${course._id}/register`)}
-              className="rounded-full focus:outline-none focus:ring-2 focus:ring-slate-600 bg-[#312964] py-3 px-7 text- text-white text-lg mt-2"
+              className="px-6 bg-[#427cce] text-white  text-xl py-3 rounded-full focus:scale-110 hover:scale-110 active:scale-[1.05]"
             >
               Enroll now
             </button>

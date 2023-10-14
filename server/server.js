@@ -20,6 +20,7 @@ import {
   registreeRouter,
   catagoryRouter,
   newsRouter,
+  layoutRouter,
 } from "./route/index.js";
 
 import { createCourse, updateCourse } from "./controller/courseController.js";
@@ -30,6 +31,7 @@ import corsOptions from "./config/corsOption.js";
 import { createUser, updateUser } from "./controller/userController.js";
 import { createRegistree } from "./controller/registreeController.js";
 import { createNews, updateNews } from "./controller/newsController.js";
+import { createLayout, updateLayout } from "./controller/layoutController.js";
 /* CONFIG */
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,26 +61,28 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const originalExtension = file.originalname.split(".").pop();
     const uniqueFilename =
-      file.fieldname + "-" + uniqueSuffix + "." + originalExtension;  
+      file.fieldname + "-" + uniqueSuffix + "." + originalExtension;
     cb(null, uniqueFilename);
   },
 });
 const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
-app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
-app.post("/api/v1/news",  upload.single("picture"), createNews);
-app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
-app.post("/api/v1/registree", upload.single("picture"), createRegistree);
+app.post("/api/v1/course", verifyJWT, createCourse);
+app.post("/api/v1/news", verifyJWT, createNews);
+app.post("/api/v1/user", verifyJWT, createUser);
+app.post("/api/v1/registree", createRegistree);
+app.post("/api/v1/layout", verifyJWT, createLayout);
 
+app.patch("/api/v1/course/:id", verifyJWT, updateCourse);
+app.patch("/api/v1/user/:id", verifyJWT, updateUser);
+app.patch("/api/v1/news/:id", verifyJWT, updateNews);
 app.patch(
-  "/api/v1/course/:id",
+  "/api/v1/layout/update",
   verifyJWT,
-  upload.single("picture"),
-  updateCourse
+
+  updateLayout
 );
-app.patch("/api/v1/user/:id", upload.single("picture"), updateUser);
-app.patch("/api/v1/news/:id", upload.single("picture"), updateNews);
 
 /* ROUTES */
 
@@ -89,6 +93,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/registree", registreeRouter);
 app.use("/api/v1/catagory", catagoryRouter);
 app.use("/api/v1/news", newsRouter);
+app.use("/api/v1/layout", layoutRouter);
 
 /* ERROR HANDLER */
 

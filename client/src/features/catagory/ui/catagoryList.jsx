@@ -10,7 +10,7 @@ import { IoAlertOutline } from "react-icons/io5";
 import { FaStarOfLife } from "react-icons/fa";
 import DeleteModal from "../../../components/deleteModal";
 
-export const CatagoryList = () => {
+const CatagoryList = () => {
   const { data, isLoading: catagoryLoading } = useGetCatagoriesQuery({
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -67,7 +67,8 @@ export const CatagoryList = () => {
     <div className="px-10 py-6 flex flex-col justify-between items-start gap-2">
       <button
         onClick={() => onSubmit()}
-        class="py-2.5 px-5 mr-2 text-sm font-medium  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+        disabled={isLoading || updateLoading}
+        class="py-2.5 px-5 mr-2 text-sm font-medium disabled:bg-[#31296471] disabled:cursor-not-allowed  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
       >
         {isLoading || updateLoading ? (
           <>
@@ -114,7 +115,7 @@ export const CatagoryList = () => {
       />
       <div className="flex items-center text-gray-400/30">
         <IoAlertOutline />
-        <h5 >click the catagory to edit its name</h5>
+        <h5>click the catagory to edit its name</h5>
       </div>
       <div className="mt-6 flex flex-col gap-4">
         {catagories?.map((catagory) => {
@@ -149,3 +150,4 @@ export const CatagoryList = () => {
     </div>
   );
 };
+export default CatagoryList;

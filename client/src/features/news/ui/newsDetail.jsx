@@ -1,6 +1,5 @@
 import React from "react";
 import { imgUrl } from "../../../utils/utils";
-import Header from "../../../components/header";
 import { useParams } from "react-router-dom";
 import { useGetNewsQuery } from "../newsApiSlice";
 import { Oval } from "react-loader-spinner";
@@ -35,10 +34,9 @@ const NewsDetailpage = ({ news }) => {
   console.log(news);
   return (
     <div className="bg-slate-100">
-      <Header />
       <div className="flex flex-col max-w-[1000px] mx-auto min-h-[88vh] py-10 gap-4 px-6 md:px-0">
         <img
-          src={`${imgUrl}${news.picture}`}
+          src={news.picture}
           alt="news pic"
           className="w-full object-cover rounded-lg h-[500px]"
         />

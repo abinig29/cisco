@@ -14,7 +14,7 @@ const CourseCard = ({ course }) => {
     >
       <img
         className="w-full h-[250px] object-cover"
-        src={`${imgUrl}${course.picture}`}
+        src={course.picture}
         alt=""
         lazyLoading={true}
       />

@@ -1,9 +1,7 @@
 import React from "react";
-import Header from "../../../components/header";
-import { useSelector } from "react-redux";
 import CourseCard from "./courseCard";
 import { useGetCoursesQuery } from "../courseApiSillce";
-import Loader from "../../../components/loader";
+import Loader from "../../../components/loader/loader";
 
 const CoursePublicListPage = () => {
   const {
@@ -22,9 +20,8 @@ const CoursePublicListPage = () => {
   const Allcourses = courses?.courses;
   return (
     <div className="bg-slate-100">
-      <Header />
       <div className="lg:max-w-[1280px] w-full mx-auto p-10 ">
-        <h4 className="font-bold relative text-3xl  before:absolute before:w-20 before:left-[40px] before:-translate-x-[50%] before:bg-[#312964] before:-bottom-5 before:h-1 ">
+        <h4 className="font-bold relative text-3xl  before:absolute before:w-20 before:left-[40px] before:-translate-x-[50%] before:bg-[#427cce] before:-bottom-5 before:h-1 ">
           {" "}
           Courses
         </h4>
@@ -40,9 +37,7 @@ const CoursePublicListPage = () => {
 
 const PublicCourseList = ({ isLoading, error, courses }) => {
   if (isLoading) {
-    return (
-      <Loader itemCount={6}/>
-    );
+    return <Loader itemCount={6} />;
   }
   if (error) {
     return <h3>{error?.data?.message}</h3>;

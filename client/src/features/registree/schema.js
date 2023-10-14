@@ -6,7 +6,9 @@ const registreeSchema = Yup.object().shape({
   lastName: Yup.string().required("Last name is required"),
   course: Yup.string().required("Course is required"),
   gender: Yup.string().required("Gender is required"),
+  program: Yup.string().required("program is required"),
   picture: Yup.string().required("payment bill is required"),
+  personalPicture: Yup.string().required("passport size photo of you is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import CourseCard from "./courseCard";
 import { Oval } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../../components/loader";
+import Loader from "../../../components/loader/loader";
 const PublicPageCourseGrid = () => {
   const { data, isLoading, isError, error, isSuccess } = useGetCoursesQuery(
     {},
@@ -29,8 +29,8 @@ const PublicPageCourseGrid = () => {
   }
   return (
     <>
-      <div className="lg:max-w-[1280px] w-full mx-auto p-10 flex items-center flex-col ">
-        <h4 className="font-bold relative text-3xl text-center before:absolute before:w-20 before:left-[50%] before:-translate-x-[50%] before:bg-[#312964] before:-bottom-5 before:h-1 ">
+      <div className="lg:max-w-[1280px] w-full mx-auto px-10 flex items-center flex-col pb-16">
+        <h4 className="font-bold relative text-3xl text-center before:absolute before:w-20 before:left-[50%] before:-translate-x-[50%] before:bg-[#427cce] before:-bottom-5 before:h-1 ">
           Recent Courses
         </h4>
         <div className="grid lg:grid-cols-3 gap-4 mt-10 md:grid-cols-2 sm:grid-cols-1 ">
@@ -44,7 +44,7 @@ const PublicPageCourseGrid = () => {
         </div>
         <button
           onClick={() => navigate("/course")}
-          className="px-6 bg-[#312964] text-white font-bold text-xl py-2 mt-4 rounded-full"
+          className="px-6 bg-[#427cce] text-white  text-xl py-2 mt-8 rounded-full focus:scale-110 hover:scale-110 active:scale-[1.05]"
         >
           Explore more
         </button>

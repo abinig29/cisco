@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { imgUrl } from "../../../utils/utils";
 import {
   useGetRegistreesQuery,
   useUpdateRegistreeMutation,
 } from "../registreeApiSlice";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Modal from "../../../components/modal";
 import { Oval } from "react-loader-spinner";
 import { NotFound } from "../../../components/notFound";
 import { registreeType } from "../../../utils/utils";
+import ImageModal from "../../../components/imageModal";
 
 const RegistreeviewPage = () => {
   const { id } = useParams();
@@ -41,6 +40,7 @@ export default RegistreeviewPage;
 
 const RegistreeView = ({ registree, course }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [openModal2, setOpenModal2] = useState(false);
   const [confirmed, setConfirmed] = useState(registree.status);
   const [updateRegistree, { data }] = useUpdateRegistreeMutation();
   const registreeDefined = registreeType.find(
@@ -58,17 +58,32 @@ const RegistreeView = ({ registree, course }) => {
     }
   };
   return (
-    <div className="mt-6 mx-6">
-      <div className="flex flex-col md:flex-row gap-4 items-center mb-2 ">
-        <div className="flex-1">
-          <img
-            className="w-full cursor-pointer"
-            onClick={() => {
-              setOpenModal(true);
-            }}
-            src={`${imgUrl}${registree.picture}`}
-            alt=""
-          />
+    <div className="mt-16 mx-6">
+      <div className="flex flex-col md:flex-row gap-4 mb-2 ">
+        <div className="flex-1 md:mt-3 ">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <img
+                className="w-full cursor-pointer "
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+                src={registree.picture}
+                alt=""
+              />
+            </div>
+            <div className="flex-1">
+              <img
+                className="w-full cursor-pointer flex-1"
+                onClick={() => {
+                  setOpenModal2(true);
+                }}
+                src={registree.personalPicture}
+                alt=""
+              />
+            </div>
+          </div>
+
           <h5 className="text-sm text-gray-500">
             click on the image to enlarge it
           </h5>
@@ -124,6 +139,10 @@ const RegistreeView = ({ registree, course }) => {
             <h3 className="bg-gray-700 p-2 rounded">{registreeDefined}</h3>
           </div>
           <div className="">
+            <h3>Registrered program</h3>
+            <h3 className="bg-gray-700 p-2 rounded">{registree.program}</h3>
+          </div>
+          <div className="">
             <h3>Course</h3>
             <h3 className="bg-gray-700 p-2 rounded">
               {registree.course?.courseName}
@@ -132,44 +151,16 @@ const RegistreeView = ({ registree, course }) => {
         </div>
       </div>
 
-      {openModal && (
-        <Modal
-          isOpen={openModal}
-          onClose={() => setOpenModal(false)}
-          bg={"bg-transparent"}
-          width={"w-full"}
-        >
-          <button
-            onClick={() => setOpenModal(false)}
-            type="button"
-            class="absolute top-2 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-          >
-            <svg
-              class="w-3 h-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 14"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-              />
-            </svg>
-            <span class="sr-only">Close modal</span>
-          </button>
-          <div class="p-6 text-center ">
-            <img
-              className="w-full h-[80vh] object-cover"
-              src={`${imgUrl}${registree.picture}`}
-              alt=""
-            />
-          </div>
-        </Modal>
-      )}
+      <ImageModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        picture={registree.picture}
+      />
+      <ImageModal
+        openModal={openModal2}
+        setOpenModal={setOpenModal2}
+        picture={registree.personalPicture}
+      />
     </div>
   );
 };

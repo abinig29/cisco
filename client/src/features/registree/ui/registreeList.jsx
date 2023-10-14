@@ -169,7 +169,7 @@ const RegistreeList = () => {
   return (
     <div>
       <div className="px-10 py-6 flex justify-between ">
-        <h1 className="font-bold font-poppins text-4xl text-white">
+        <h1 className=" font-poppins text-3xl text-white mb-2">
           Registrees
         </h1>
         <div

@@ -7,18 +7,16 @@ import { selectRole } from "../features/auth/authSlice";
 import { useSelector } from "react-redux";
 import { useSendLogoutMutation } from "../features/auth/authApiSlice";
 
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiFillLayout, AiOutlineDown } from "react-icons/ai";
 import { BiSolidRightArrow } from "react-icons/bi";
-import { MdArrowUpward } from "react-icons/md";
 import { HiArrowSmRight } from "react-icons/hi";
 import { SiCoursera } from "react-icons/si";
 import { FaRegNewspaper } from "react-icons/fa";
-import { BsBook, BsPen } from "react-icons/bs";
+import { BsBook, BsChevronDoubleDown, BsPen } from "react-icons/bs";
 
 import { useGetCatagoriesQuery } from "../features/catagory/catagoryApiSlice";
 
 const SideBarNavigation = ({ open, onClick, setOpenSidebar }) => {
-  console.log(open);
   const [sendLogout, { isError, error, isSuccess, isLoading }] =
     useSendLogoutMutation();
   const { data, isLoading: catagoryLoading } = useGetCatagoriesQuery({
@@ -79,13 +77,11 @@ const SideBarNavigation = ({ open, onClick, setOpenSidebar }) => {
                   <BsPen className="text-[20px] text-white" />
                 </span>
                 <span className="ml-3">Registree</span>
-                <span className="ml-auto bg-gray-500 rounded-full p-1">
-                  <MdArrowUpward
-                    className={`text-[18px]  text-white transition  ${
-                      !mainCatagoryOpen ? `rotate-0` : `rotate-180`
-                    }`}
-                  />
-                </span>
+                <BsChevronDoubleDown
+                  className={`text-[18px]  text-white transition ml-auto ${
+                    !mainCatagoryOpen ? `rotate-0` : `rotate-180`
+                  }`}
+                />
               </div>
               {mainCatagoryOpen &&
                 catagories?.map((catagory, index) => (
@@ -185,6 +181,23 @@ const SideBarNavigation = ({ open, onClick, setOpenSidebar }) => {
                 <span className="flex-1 ml-3 whitespace-nowrap">
                   Course provider
                 </span>
+              </div>
+            </li>
+          )}
+          {isAdmin && (
+            <li>
+              <div
+                onClick={() => {
+                  navigate("/dash/layout");
+                  setMainCatagoryOpen(false);
+                  setOpenSidebar(false);
+                }}
+                className={`flex ${
+                  pathname === "/dash/layout" ? "bg-gray-500" : null
+                } cursor-pointer items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}
+              >
+                <AiFillLayout className="text-[20px]" />
+                <span className="flex-1 ml-3 whitespace-nowrap">Layout</span>
               </div>
             </li>
           )}

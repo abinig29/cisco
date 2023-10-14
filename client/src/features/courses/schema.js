@@ -10,7 +10,7 @@ export const courseSchema = (update) => {
   const registrationDeadline = update
     ? Yup.date().notRequired()
     : Yup.date().required("required");
-  const courseProvider = Yup.string();
+  const courseProvider = Yup.string().notRequired();
 
   return Yup.object().shape({
     courseName: Yup.string().required("Course name is required"),

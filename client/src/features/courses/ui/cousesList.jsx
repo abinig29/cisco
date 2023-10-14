@@ -70,7 +70,7 @@ const CoursesList = () => {
             onClick={() => navigate(`/dash/courses/${value.getValue()}`)}
             className="bg-[#432830] text-white px-4 rounded py-2"
           >
-            View
+            Edit
           </button>
           <button
             onClick={() => {
@@ -146,7 +146,7 @@ const CoursesList = () => {
   return (
     <div>
       <div className="px-10 py-6 flex justify-between ">
-        <h1 className="font-bold font-poppins text-4xl text-white">Courses</h1>
+        <h1 className=" font-poppins text-3xl text-white mb-2">Courses</h1>
         {isAdmin && (
           <button
             onClick={() => navigate("create")}

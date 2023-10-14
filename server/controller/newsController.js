@@ -17,11 +17,9 @@ export const createNews = async (req, res) => {
   const mainContentString = req.body.mainContent;
   const mainContent = JSON.parse(mainContentString);
 
-
   let newsBody = {
     ...req.body,
     mainContent,
-    picture: req.file?.filename,
   };
   const news = await News.create(newsBody);
   if (news) {
@@ -51,14 +49,16 @@ export const updateNews = async (req, res) => {
   const { id } = req.params;
   const mainContentString = req.body.mainContent;
   const mainContent = JSON.parse(mainContentString);
+
   const body = {
     ...req.body,
     mainContent,
-    picture: req.file?.filename,
   };
+
   const updatedNews = await News.findByIdAndUpdate(id, body, {
     new: true,
   });
+
   if (updatedNews) {
     res.status(200).json({ news: updatedNews });
   } else {

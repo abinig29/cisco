@@ -1,8 +1,6 @@
-import { useDropzone } from "react-dropzone";
 import React, { useCallback, useEffect, useState } from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
-import { FiUploadCloud } from "react-icons/fi";
 import { ErrorMessage, Field, useFormik } from "formik";
 import newSchema from "../schema";
 import { FaStarOfLife } from "react-icons/fa";
@@ -10,11 +8,13 @@ import { FaStarOfLife } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useUpdateNewsMutation } from "../newsApiSlice";
 import { useCreateNewsMutation } from "../newsApiSlice";
-import { AiFillCloseCircle, AiFillDelete, AiOutlinePlus } from "react-icons/ai";
+import { AiFillDelete, AiOutlinePlus } from "react-icons/ai";
 import { imgUrl } from "../../../utils/utils";
+import UploadFile from "../../../components/uploadFile";
 
 const AddCreateNewsForm = ({ news, update }) => {
   const navigate = useNavigate();
+  const [doneUploading, setDoneUploading] = useState(false);
   const [createNews, { isError, error, isSuccess, isLoading }] =
     useCreateNewsMutation();
   const [
@@ -26,11 +26,6 @@ const AddCreateNewsForm = ({ news, update }) => {
       isLoading: isUpdateLoading,
     },
   ] = useUpdateNewsMutation();
-  const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [files]);
 
   useEffect(() => {
     if (isSuccess || isUpdateSuccess) {
@@ -39,14 +34,14 @@ const AddCreateNewsForm = ({ news, update }) => {
   }, [isSuccess, isUpdateSuccess, navigate]);
 
   const onSubmit = async (values, { resetForm }) => {
-    const newsData = new FormData();
-    newsData.append("title", values.title);
-    newsData.append("picture", values.picture);
-
-    newsData.append("mainContent", JSON.stringify(values.mainContent));
+    const newsData = {};
+    newsData.title = values.title;
+    newsData.picture = values.picture;
+    newsData.mainContent = JSON.stringify(values.mainContent);
 
     try {
       if (update) {
+        
         await updateNews({ news: newsData, id: news._id }).unwrap();
       } else {
         await createNews(newsData).unwrap();
@@ -58,7 +53,7 @@ const AddCreateNewsForm = ({ news, update }) => {
   const initialValues = {
     title: update ? news?.title : "",
     mainContent: update ? news?.mainContent : [{ topic: "", content: "" }],
-    picture: update ? `${imgUrl}${news.picture}` : "",
+    picture: update ? news.picture : "",
   };
   const {
     touched,
@@ -94,23 +89,9 @@ const AddCreateNewsForm = ({ news, update }) => {
       };
     });
   };
-
-  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-    if (acceptedFiles?.length) {
-      setFiles((previousFiles) => [
-        ...previousFiles,
-        ...acceptedFiles.map((file) =>
-          Object.assign(file, { preview: URL.createObjectURL(file) })
-        ),
-      ]);
-      acceptedFiles.map((file) => setFieldValue("picture", file));
-    }
-  });
-  const removeFile = (name) => {
-    setFiles((files) => files.filter((file) => file.name !== name));
-    setFieldValue("picture", "");
-  };
-  const { isDragActive, getRootProps, getInputProps } = useDropzone({ onDrop });
+  useEffect(() => {
+    if (values.picture) setDoneUploading(true);
+  }, [values.picture]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -118,7 +99,8 @@ const AddCreateNewsForm = ({ news, update }) => {
         <div className="flex-1">
           <button
             type="submit"
-            class="py-2.5 px-5 mr-2 text-sm font-medium  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+            disabled={isLoading || isUpdateLoading || !doneUploading}
+            class="py-2.5 px-5 mr-2 disabled:bg-[#31296471] disabled:cursor-not-allowed  text-sm font-medium  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
           >
             {isLoading || isUpdateLoading ? (
               <>
@@ -258,75 +240,21 @@ const AddCreateNewsForm = ({ news, update }) => {
         <div className="flex-1">
           <button
             type="submit"
-            class="py-2.5 px-5 mr-2 text-sm font-medium opacity-0  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+            class="py-2.5 px-5 mr-2 text-sm font-medium opacity-0 hidden rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white md:inline-flex items-center"
           >
             news
           </button>
-          <div>
-            {update && typeof values.picture === "string" && (
-              <img
-                src={values.picture}
-                alt={"alt"}
-                width={100}
-                height={100}
-                className="h-full w-full object-cover "
-              />
-            )}
-          </div>
-          {!files.length && (
-            <div>
-              <div
-                {...getRootProps({
-                  className:
-                    `w-full border-dashed border-gray-500 border mt-4 cursor-pointer mb-4 ${update && typeof values.picture === "string" ?`h-[80px]`:`h-[380px]`} text-white flex flex-col items-center justify-center`,
-                })}
-              >
-                <input {...getInputProps()} />
-                {values.picture ? (
-                  <>{ update && typeof values.picture === "string"?"change the cover photo":values.picture.name}</>
-                ) : isDragActive ? (
-                  <>Draging.... </>
-                ) : (
-                  <div className=" py-3 flex flex-col items-center text-white">
-                    <FiUploadCloud className="text-[40px]" />
-                    <h3>Drag and drop to upload</h3>
-                    <h5>or browse</h5>
-                  </div>
-                )}
-              </div>
-              {touched.picture && errors.picture && (
-                <div className="text-sm text-red-600 dark:text-red-500 mb-2">
-                  {errors.picture}
-                </div>
-              )}
-            </div>
-          )}
 
-          {typeof values.picture !== "string" &&
-            files.map((file) => (
-              <div
-                key={file.name}
-                className="relative h-[385px] flex-1 bg-red-400 mt-4"
-              >
-                <img
-                  src={file.preview}
-                  alt={file.name}
-                  width={100}
-                  height={100}
-                  onLoad={() => {
-                    URL.revokeObjectURL(file.preview);
-                  }}
-                  className="h-full w-full object-cover "
-                />
-                <button
-                  type="button"
-                  className=" bg-secondary-400 rounded-full absolute -top-3 -right-3 "
-                  onClick={() => removeFile(file.name)}
-                >
-                  <AiFillCloseCircle className="text-[30px] text-white hover:text-gray-600" />
-                </button>
-              </div>
-            ))}
+          <UploadFile
+            setDoneUploading={setDoneUploading}
+            height={150}
+            textColor={"text-white"}
+            lable={"Cover photo"}
+            picture={values.picture}
+            imgTouched={touched.picture}
+            imgError={errors.picture}
+            setImg={(value) => setFieldValue("picture", value)}
+          />
         </div>
       </div>
     </form>

@@ -29,7 +29,7 @@ const UsersList = () => {
     picture ? (
       <img
         class="w-10 h-10 rounded-full object-cover"
-        src={`${imgUrl}${picture}`}
+        src={picture}
         alt="Rounded avatar"
       ></img>
     ) : (
@@ -74,7 +74,7 @@ const UsersList = () => {
       cell: (value) => (
         <div className="flex gap-2">
           <button
-            onClick={() => navigate(`/dash/user/${value.getValue()}`)}
+            onClick={() => navigate(`/dash/users/${value.getValue()}`)}
             className="bg-[#432830] text-white px-4 rounded py-2"
           >
             Edit
@@ -105,7 +105,7 @@ const UsersList = () => {
     return (
       <div>
         <div className="px-10 py-6 flex justify-between ">
-          <h1 className="font-bold font-poppins text-4xl text-white">Users</h1>
+          <h1 className=" font-poppins text-3xl text-white mb-2">Users</h1>
           <button
             onClick={() => navigate("create")}
             className="px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg"
@@ -139,7 +139,7 @@ const UsersList = () => {
   return (
     <div>
       <div className="px-10 py-6 flex justify-between ">
-        <h1 className="font-bold font-poppins text-4xl text-white">Users</h1>
+        <h1 className=" font-poppins text-3xl text-white mb-2">Users</h1>
         <button
           onClick={() => navigate("create")}
           className="px-6 bg-[#312964] text-white font-bold text-md py-2 rounded-lg"
@@ -153,7 +153,7 @@ const UsersList = () => {
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
-        deletedItemName={'user'}
+        deletedItemName={"user"}
       />
     </div>
   );

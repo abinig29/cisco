@@ -4,20 +4,27 @@ import { useDropzone } from "react-dropzone";
 import { useFormik } from "formik";
 import { FiUploadCloud } from "react-icons/fi";
 import { FaStarOfLife } from "react-icons/fa";
-import Header from "../../../components/header";
+
 import { useCreateRegistreeMutation } from "../registreeApiSlice";
 import { useNavigate } from "react-router-dom";
 import { gender, registreeType } from "../../../utils/utils";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { MdOutlineCrisisAlert } from "react-icons/md";
+import UploadFile from "../../../components/uploadFile";
+
 const RegistrationPageForm = ({ courses, selectedCourse }) => {
   const [price, setPrice] = useState(courses[0][registreeType[0].key]);
+  const [doneUploading, setDoneUploading] = useState(false);
+  const [doneUploading2, setDoneUploading2] = useState(false);
 
   const initialValues = {
     firstName: "",
     lastName: "",
     email: "",
     picture: "",
+    personalPicture: "",
     gender: "Male",
+    program:"Day",
     registreeType: registreeType?.length && registreeType[0].key,
     course: selectedCourse
       ? selectedCourse._id
@@ -29,24 +36,15 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
   const [createRegistree, { isError, error, isSuccess, isLoading }] =
     useCreateRegistreeMutation();
 
-  const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [files]);
-
   const onSubmit = async (values, { resetForm }) => {
+    console.log(values);
     const selectedcourseId = values.course;
     const selectedCourse = courses.find(
       (course) => course._id === selectedcourseId
     ).courseName;
 
-    const userData = new FormData();
-    for (let value in values) {
-      userData.append(value, values[value]);
-    }
     try {
-      const { _id: id } = await createRegistree(userData).unwrap();
+      const { _id: id } = await createRegistree(values).unwrap();
       const data = { course: selectedCourse, isRegisterd: true };
       resetForm();
       navigate(`/${id}/sucessfull`, { replace: true, state: data });
@@ -65,6 +63,14 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
       <option className="text-black" key={registree.key} value={registree.key}>
         {" "}
         {registree.value}
+      </option>
+    );
+  });
+  const programOption = ["Night", "Day"].map((registree, index) => {
+    return (
+      <option className="text-black" key={index} value={registree}>
+        {" "}
+        {registree}
       </option>
     );
   });
@@ -103,28 +109,13 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
     if (values.gender === "Female") setPrice(price * 0.75);
     if (values.gender === "Male") setPrice(price);
   }, [values.gender]);
-
-  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-    if (acceptedFiles?.length) {
-      setFiles((previousFiles) => [
-        ...previousFiles,
-        ...acceptedFiles.map((file) =>
-          Object.assign(file, { preview: URL.createObjectURL(file) })
-        ),
-      ]);
-      acceptedFiles.map((file) => setFieldValue("picture", file));
-    }
-  });
-  const removeFile = (name) => {
-    setFiles((files) => files.filter((file) => file.name !== name));
-    setFieldValue("picture", "");
-  };
-  const { isDragActive, getRootProps, getInputProps } = useDropzone({ onDrop });
+  useEffect(() => {
+    if (values.picture) setDoneUploading(true);
+    if (values.personalPicture) setDoneUploading2(true);
+  }, [values.picture, values.personalPicture]);
   return (
-    <main className="bg-slate-100 min-h-screen">
-      <Header />
-
-      <div className="flex justify-center mt-14">
+    <main className="bg-slate-100 min-h-[85vh]">
+      <div className="flex justify-center pt-4">
         <form onSubmit={handleSubmit}>
           <div className="w-[70vw] flex gap-6 flex-col md:flex-row">
             <div className="flex-1">
@@ -300,8 +291,6 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
                   </div>
                 )}
               </div>
-            </div>
-            <div className="flex-1 mt-2">
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-[1px] bg-red-200 round " />
 
@@ -313,60 +302,64 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
                 </div>
                 <div className="flex-1 h-[1px] bg-red-200 round" />
               </div>
-              {!files.length && (
-                <div>
-                  <div
-                    {...getRootProps({
-                      className:
-                        "w-full border-dashed border-gray-500 border mt-4 cursor-pointer mb-4 h-[380px] text-black flex flex-col items-center justify-center",
-                    })}
-                  >
-                    <input {...getInputProps()} />
-                    {values.picture ? (
-                      <>{values.picture.name}</>
-                    ) : isDragActive ? (
-                      <>Draging.... </>
-                    ) : (
-                      <div className=" py-3 flex flex-col items-center">
-                        <FiUploadCloud className="text-[40px]" />
-                        <h3>Drag and drop to upload</h3>
-                        <h5>or browse</h5>
-                      </div>
-                    )}
-                  </div>
-                  {touched.picture && errors.picture && (
-                    <div className="text-sm text-red-600 dark:text-red-500 mb-2">
-                      {errors.picture}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {files.map((file) => (
-                <div
-                  key={file.name}
-                  className="relative h-[385px] flex-1 bg-red-400 mt-4"
+              <div className="flex items-center  justify-center text-[16px] text-gray-600">
+                <MdOutlineCrisisAlert />
+                <h3 className="">There is 15% discount to women</h3>
+              </div>
+            </div>
+            <div className="flex-1 mt-2 ">
+              <div className="mb-2">
+                <label
+                  for="gender"
+                  class="block mb-2 text-sm font-medium text-gray-900 "
                 >
-                  <img
-                    src={file.preview}
-                    alt={file.name}
-                    width={100}
-                    height={100}
-                    onLoad={() => {
-                      URL.revokeObjectURL(file.preview);
-                    }}
-                    className="h-full w-full object-cover "
+                  Select Program
+                  <span>
+                    {
+                      <FaStarOfLife className=" text-red-900 text-[10px] inline ml-2" />
+                    }
+                  </span>
+                </label>
+                <select
+                  id="gender"
+                  {...getFieldProps("program")}
+                  class="bg-gray-50 border border-gray-300 text-black text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark: dark:border-gray-600 dark:placeholder-black placeholder:text-gray-500"
+                >
+                  {programOption}
+                </select>
+                {touched.program && errors.program && (
+                  <div className="text-sm text-red-600 dark:text-red-500 mb-2">
+                    {errors.program}
+                  </div>
+                )}
+              </div>
+              <div className="md:flex md:gap-8">
+                <div className="flex-1">
+                  <UploadFile
+                    height={150}
+                    lable={"Bill photo"}
+                    picture={values.picture}
+                    imgTouched={touched.picture}
+                    imgError={errors.picture}
+                    setImg={(value) => setFieldValue("picture", value)}
                   />
-                  <button
-                    type="button"
-                    className="w-7 h-7 border border-secondary-400 bg-secondary-400 rounded-full grid place-content-center absolute bg-black text-white hover:text-black -top-3 -right-3 hover:bg-white transition-colors"
-                    onClick={() => removeFile(file.name)}
-                  ></button>
                 </div>
-              ))}
+                <div className="flex-1">
+                  <UploadFile
+                    height={150}
+                    lable={"Personal photo"}
+                    picture={values.personalPicture}
+                    imgTouched={touched.personalPicture}
+                    imgError={errors.personalPicture}
+                    setImg={(value) => setFieldValue("personalPicture", value)}
+                  />
+                </div>
+              </div>
+
               <button
+                disabled={!doneUploading || !doneUploading2 || isLoading}
                 type="submit"
-                class="py-2.5 px-5  text-sm font-medium  rounded-lg cursor-pointer my-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+                class="py-2.5 px-5  text-sm font-medium disabled:bg-[#427cce70] disabled:cursor-not-allowed   rounded-lg cursor-pointer my-2 focus:z-10 focus:ring-2  bg-[#427cce]  text-white inline-flex items-center"
               >
                 {isLoading ? (
                   <>

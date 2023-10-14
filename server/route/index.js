@@ -4,5 +4,15 @@ import userRouter from "./userRoute.js";
 import authRouter from "./authRoute.js";
 import registreeRouter from "./registreeRoute.js";
 import catagoryRouter from "./catagoryRoute.js";
-import newsRouter from "./newsRoute.js"
-export { rootRouter, courseRouter, userRouter, authRouter, registreeRouter ,catagoryRouter,newsRouter};
+import newsRouter from "./newsRoute.js";
+import layoutRouter from "./layoutRoute.js";
+export {
+  rootRouter,
+  courseRouter,
+  userRouter,
+  authRouter,
+  registreeRouter,
+  catagoryRouter,
+  newsRouter,
+  layoutRouter,
+};

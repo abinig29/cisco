@@ -9,7 +9,7 @@ export const createUser = async (req, res) => {
   const { email } = req.body;
   const duplicate = await User.findOne({ email }).lean().exec();
   if (duplicate) throw new BadRequestError("user found with this email");
-  const user = await User.create({ ...req.body, picture: req.file?.filename });
+  const user = await User.create(req.body);
   if (user) {
     res.status(201).json(user);
   } else {
@@ -28,7 +28,7 @@ export const getUsers = async (req, res) => {
   if (!users?.length) {
     throw new NotFoundError("No user");
   }
-  res.status(200).json({users});
+  res.status(200).json({ users });
 };
 
 //@desc update users
@@ -36,7 +36,6 @@ export const getUsers = async (req, res) => {
 //@access private
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body);
   const user = await User.findById(id).lean().exec();
   if (!user) throw new BadRequestError("No user found");
   if (req.body.password) {
@@ -44,11 +43,7 @@ export const updateUser = async (req, res) => {
     const hashedPass = await bcrypt.hash(req.body.password, salt);
     req.body.password = hashedPass;
   }
-  const updatedUser = await User.findByIdAndUpdate(
-    id,
-    { ...req.body, picture: req.file?.filename },
-    { new: true }
-  );
+  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
   // console.log(updatedUser);
   if (updatedUser) {
     res.status(200).json(updatedUser);

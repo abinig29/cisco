@@ -21,9 +21,17 @@ const registreeSchema = new mongoose.Schema(
       type: String,
       required: [true, "you must provide bill photo"],
     },
+    personalPicture: {
+      type: String,
+      required: [true, "you must provide personal photo"],
+    },
     gender: {
       type: String,
       required: [true, "you must provide gender"],
+    },
+    program: {
+      type: String,
+      required: [true, "you must program"],
     },
     registreeType: {
       type: String,

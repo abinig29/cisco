@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BsCalendar2DateFill } from "react-icons/bs";
-import { FiUploadCloud } from "react-icons/fi";
 import { useFormik } from "formik";
 import { courseSchema } from "../schema";
 import { FaStarOfLife } from "react-icons/fa";
@@ -16,11 +15,13 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRole } from "../../auth/authSlice";
 import { ROLES } from "../../../utils/utils";
+import UploadFile from "../../../components/uploadFile";
 
 const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
   const isAdmin = useSelector(selectRole) === ROLES.admin;
   const [step, setStep] = useState(0);
   const navigate = useNavigate();
+  const [doneUploading, setDoneUploading] = useState(false);
   const [createCourse, { isError, error, isSuccess, isLoading }] =
     useCreateCourseMutation();
   const [
@@ -101,22 +102,17 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
 
   const onSubmit = async (values, { resetForm }) => {
     if (step === 0) return setStep(1);
-    const courseData = new FormData();
-    for (let value in values) {
-      courseData.append(value, values[value]);
-    }
+    const courseData = { ...values };
+    if (!doneUploading) return;
     if (update) {
       if (!values.endDate) {
-        courseData.delete("endDate");
+        delete courseData.endDate;
       }
       if (!values.startDate) {
-        courseData.delete("startDate");
+        delete courseData.startDate;
       }
       if (!values.registrationDeadline) {
-        courseData.delete("registrationDeadline");
-      }
-      if (!values.picture) {
-        courseData.delete("picture");
+        delete courseData.registrationDeadline;
       }
     }
     const coverdTopics = topics.filter((topic) => topic.isChecked);
@@ -125,8 +121,8 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     const coverdTopicsLable = [];
 
     coverdTopics.forEach((topic) => coverdTopicsLable.push(topic.lable));
-    courseData.append("topics", topicsLable);
-    courseData.append("coverdTopics", coverdTopicsLable);
+    courseData.topics = topicsLable;
+    courseData.coverdTopics = coverdTopicsLable;
     try {
       if (update) {
         await updateCourse({ course: courseData, id: course._id }).unwrap();
@@ -142,7 +138,7 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     endDate: null,
     startDate: null,
     registrationDeadline: null,
-    courseProvider: update ? course?.courseProvider : catagories[0]._id,
+    courseProvider: update ? course?.courseProvider?._id : catagories[0]._id,
     aauUGStudentPrice: update ? course?.aauUGStudentPrice : "",
     aauPGStudentPrice: update ? course?.aauPGStudentPrice : "",
     aauExtensionStudentPrice: update ? course?.aauExtensionStudentPrice : "",
@@ -151,7 +147,7 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     noneAAUOrganizationSponsoredPrice: update
       ? course?.noneAAUOrganizationSponsoredPrice
       : "",
-    picture: "",
+    picture: update ? course?.picture : "",
     shortDescription: update ? course?.shortDescription : "",
     description: update ? course?.description : "",
     lecture: update ? course?.lecture : [],
@@ -168,6 +164,7 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     validationSchema: courseSchema(update),
     onSubmit,
   });
+  // useEffect(()=>{console.log(values)},[values])
 
   const onDrop = (acceptedFiles) => {
     if (acceptedFiles?.length) {
@@ -175,6 +172,9 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     }
   };
   const { isDragActive, getRootProps, getInputProps } = useDropzone({ onDrop });
+  useEffect(() => {
+    if (values.picture) setDoneUploading(true);
+  }, [values.picture]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -182,8 +182,9 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
         <div className="flex flex-col md:flex-row  gap-10 mx-10 mt-[50px]">
           <div className="flex-1">
             <button
+              disabled={isLoading || isUpdateLoading}
               type="submit"
-              class="py-2.5 px-5 mr-2 text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+              class="py-2.5 px-5 mr-2 disabled:bg-[#31296471] disabled:cursor-not-allowed  text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
             >
               Next
               <AiOutlineArrowRight className="ml-2" />
@@ -278,26 +279,6 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
                 <p className="text-sm text-red-600 dark:text-red-500">
                   {errors.description}
                 </p>
-              )}
-            </div>
-
-            <div
-              {...getRootProps({
-                className:
-                  "w-full border-dashed border mt-4 cursor-pointer mb-4 h-[110px] text-white flex flex-col items-center justify-center",
-              })}
-            >
-              <input {...getInputProps()} />
-              {values.picture ? (
-                <>{values.picture.name}</>
-              ) : isDragActive ? (
-                <>Draging.... </>
-              ) : (
-                <div className=" py-3 flex flex-col items-center">
-                  <FiUploadCloud className="text-[40px]" />
-                  <h3>Drag and drop to upload</h3>
-                  <h5>or browse</h5>
-                </div>
               )}
             </div>
           </div>
@@ -570,14 +551,16 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
           <div className="w-full flex items-center justify-between">
             <button
               onClick={() => setStep(0)}
-              class="py-2.5 px-5 mr-2 text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+              disabled={isLoading || isUpdateLoading || !doneUploading}
+              class="py-2.5 disabled:bg-[#31296471] disabled:cursor-not-allowed px-5 mr-2 text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
             >
               <AiOutlineArrowRight className="mr-2 rotate-180" />
               Previous
             </button>
             <button
               type="submit"
-              class="py-2.5 px-5 mr-2 text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
+              disabled={isLoading || isUpdateLoading || !doneUploading}
+              class="py-2.5 px-5 mr-2 disabled:bg-[#31296471] disabled:cursor-not-allowed text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
             >
               {isLoading || isUpdateLoading ? (
                 <>
@@ -607,6 +590,36 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
               )}
             </button>
           </div>
+          {/* <div
+            {...getRootProps({
+              className:
+                "w-full border-dashed border mt-4 cursor-pointer mb-4 h-[110px] text-white flex flex-col items-center justify-center",
+            })}
+          >
+            <input {...getInputProps()} />
+            {values.picture ? (
+              <>{values.picture.name}</>
+            ) : isDragActive ? (
+              <>Draging.... </>
+            ) : (
+              <div className=" py-3 flex flex-col items-center">
+                <FiUploadCloud className="text-[40px]" />
+                <h3>Drag and drop to upload</h3>
+                <h5>or browse</h5>
+              </div>
+            )}
+          </div> */}
+          <UploadFile
+            setDoneUploading={setDoneUploading}
+            height={150}
+            textColor={"text-white"}
+            lable={"Cover photo"}
+            picture={values.picture}
+            imgTouched={touched.picture}
+            imgError={errors.picture}
+            setImg={(value) => setFieldValue("picture", value)}
+          />
+
           <div className="w-full">
             <label
               for="catagory"

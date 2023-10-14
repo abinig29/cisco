@@ -11,14 +11,13 @@ const Header = () => {
     <section className=" bg-[#427cce]">
       <div className="lg:max-w-[1280px] w-full mx-auto ">
         <nav className="flex items-center justify-between py-4 px-6">
-          <img
-            src={logo}
-            alt=""
-            className="w-[200px] object-contain "
-          />
+          <img src={logo} alt="" className="w-[200px] object-contain " />
           <ul className="  gap-4 text-[18px] text-gray-500 md:flex hidden">
             <NavLink className={"underline_decor text-white"} to="/">
               Home
+            </NavLink>
+            <NavLink className={"underline_decor text-white"} to="/about">
+              About
             </NavLink>
             <NavLink className={"underline_decor text-white"} to="/course">
               Courses
@@ -48,7 +47,7 @@ const Header = () => {
             <HiMenu size={"25px"} />
           </div>
           <div
-            className={`md:hidden fixed  top-0 left-0 w-[300px]  h-[100vh] bg-[#423886] z-20  ${
+            className={`md:hidden fixed  top-0 left-0 w-[300px]  h-[100vh] bg-[#427cce] z-20  ${
               open ? `-translate-x-[100%]` : `-translate-x-[0%]`
             } transition-all duration-500 ease-in-out`}
           >
@@ -72,6 +71,14 @@ const Header = () => {
                   to="/"
                 >
                   Home
+                </NavLink>
+                <NavLink
+                  className={
+                    "hover:pl-8 transition-all duration-300 text-white  font-poppins p-5 hover:bg-[#2970af26]"
+                  }
+                  to="/about"
+                >
+                  About
                 </NavLink>
                 <NavLink
                   className={

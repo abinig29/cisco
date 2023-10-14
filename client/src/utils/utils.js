@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { storage } from "../firbase";
+import { deleteObject, ref } from "firebase/storage";
 
 // export const imgUrl = "https://cisco-5aze.onrender.com/uploads/";
 export const imgUrl = "http://localhost:5001/uploads/";
@@ -43,3 +45,9 @@ export function ScrollToTop() {
 
   return null;
 }
+export const deleteFile = (filePath) => {
+  const desertRef = ref(storage, filePath);
+  deleteObject(desertRef)
+    .then(() => {})
+    .catch((error) => {});
+};
