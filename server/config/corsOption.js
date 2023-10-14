@@ -1,6 +1,7 @@
 const allowedOrigins = [
   "http://localhost:5173",
   "https://cisco-registration.netlify.app",
+  "https://verdant-biscuit-aa5a4b.netlify.app/"
 ];
 
 const corsOptions = {
