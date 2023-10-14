@@ -34,7 +34,7 @@ const Hero = () => {
             Register now
           </button>
         </motion.div>
-        <div className="flex-1 sm:p-0 relative order-1 sm:order-2">
+        <div className="flex-1 sm:p-0 relative order-1 sm:order-2 ">
           {layout ? (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
@@ -42,7 +42,7 @@ const Hero = () => {
               transition={{
                 duration:0.3
               }}
-              className="flex-[1]  space-y-3 flex flex-col items-center text-center sm:text-left sm:items-start justify-stretch order-2 sm:order-1 "
+              // className="flex-[1]  space-y-3 flex flex-col items-center text-center order-2 sm:order-1 bg-red-800 "
             >
               <img
                 src={layout?.picture}

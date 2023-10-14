@@ -35,12 +35,10 @@ const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled;
-          dispatch(setCredentialNull());
           console.log("logout please");
-          //   setTimeout(() => {
-          //     dispatch(apiSlice.util.resetApiState());
-          //   }, 1000);
+          await queryFulfilled;
+          console.log('2')
+          dispatch(setCredentialNull());
         } catch (err) {
           console.log(err);
         }
