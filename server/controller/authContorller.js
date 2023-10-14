@@ -45,12 +45,8 @@ export const login = async (req, res) => {
 //@access public
 export const logout = async (req, res) => {
   const Jwt = req.cookies?.Jwt;
-  if (!Jwt) return res.status(204);
-  res.clearCookie("Jwt", {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV !== "development",
-  });
+  if (!Jwt) return res.status(204).json({message:"wasnt there"});
+  res.cookie("Jwt", "");
   res.json({ message: "Cookie cleared" });
 };
 
