@@ -8,6 +8,8 @@ import {
 import Modal from "../../../components/modal";
 import BasicTable from "../../../components/table";
 import DeleteModal from "../../../components/deleteModal";
+import { deleteFile } from "../../../utils/utils";
+import Loader from "../../../components/loader";
 const userType = [
   {
     type: "All user",
@@ -48,6 +50,15 @@ const RegistreeList = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    if (deleteIsSuccess) {
+      const registree = registrees.find((v) => v._id == deletedId);
+      const personalPicturepath = registree?.personalPicture;
+      const billPicture = registree?.picture;
+      deleteFile(personalPicturepath);
+      deleteFile(billPicture);
+    }
+  }, [deleteIsSuccess]);
 
   useEffect(() => {
     if (data) setRegistrees(data.registree);
@@ -144,24 +155,12 @@ const RegistreeList = () => {
           </button>
         </div>
       </Modal>
-
     );
   }
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-[90vh]">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
-        />
+        <Loader />
       </div>
     );
   }
@@ -169,9 +168,7 @@ const RegistreeList = () => {
   return (
     <div>
       <div className="px-10 py-6 flex justify-between ">
-        <h1 className=" font-poppins text-3xl text-white mb-2">
-          Registrees
-        </h1>
+        <h1 className=" font-poppins text-3xl text-white mb-2">Registrees</h1>
         <div
           className="bg-gray-700 px-10 py-[8px] cursor-pointer rounded relative w-52"
           onClick={() => setSlectModal((pre) => !pre)}
@@ -198,12 +195,17 @@ const RegistreeList = () => {
           )}
         </div>
       </div>
-      <BasicTable data={registrees} columns={columns} filterKey={"firstName"} keyToDisplay={'First name'} />
+      <BasicTable
+        data={registrees}
+        columns={columns}
+        filterKey={"firstName"}
+        keyToDisplay={"First name"}
+      />
       <DeleteModal
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
-        deletedItemName={'registree'}
+        deletedItemName={"registree"}
       />
     </div>
   );

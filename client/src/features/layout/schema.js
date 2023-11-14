@@ -25,7 +25,6 @@ export const videoSchema = Yup.object().shape({
   title: Yup.string(),
 });
 export const heroSchema = Yup.object().shape({
-  picture: Yup.string().required("picture is required"),
   title: Yup.string().required("title is required"),
   subTitle: Yup.string().required("title is required"),
 });

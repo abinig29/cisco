@@ -4,6 +4,7 @@ import { Oval } from "react-loader-spinner";
 import { NotFound } from "../../../components/notFound";
 import { useGetNewsQuery } from "../newsApiSlice";
 import AddCreateNewsForm from "./addEditNewsForm";
+import Loader from "../../../components/loader";
 
 const AddEditNews = () => {
   const { id } = useParams();
@@ -14,17 +15,7 @@ const AddEditNews = () => {
   if (newsLoading) {
     return (
       <div className="grid place-content-center  h-screen">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+        <Loader
         />
       </div>
     );

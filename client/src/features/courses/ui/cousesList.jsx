@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useDeleteCourseMutation,
   useGetCoursesQuery,
@@ -13,6 +13,8 @@ import { selectId, selectRole } from "../../auth/authSlice";
 import BasicTable from "../../../components/table";
 import DeleteModal from "../../../components/deleteModal";
 import moment from "moment";
+import { deleteFile } from "../../../utils/utils";
+import Loader from "../../../components/loader";
 
 const CoursesList = () => {
   const { data, isLoading, isError, error, isSuccess } = useGetCoursesQuery({
@@ -42,6 +44,20 @@ const CoursesList = () => {
   const role = useSelector(selectRole);
   const id = useSelector(selectId);
   const isAdmin = role === "Admin";
+  const FilterdCourse = isAdmin
+    ? data?.courses
+    : data?.courses?.filter((course) => {
+        return course.lecture.includes(id);
+      });
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (deleteIsSuccess) {
+      const course = FilterdCourse.find((v) => v._id == deletedId);
+      const courseBannerPath = course?.picture;
+      console.log(courseBannerPath);
+      deleteFile(courseBannerPath);
+    }
+  }, [deleteIsSuccess]);
   const columns = [
     {
       header: "COURSE CODE",
@@ -86,29 +102,8 @@ const CoursesList = () => {
     },
   ];
 
-  const FilterdCourse = isAdmin
-    ? data?.courses
-    : data?.courses?.filter((course) => {
-        return course.lecture.includes(id);
-      });
-  const navigate = useNavigate();
   if (isLoading) {
-    return (
-      <div className="grid place-content-center  h-screen">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
-        />
-      </div>
-    );
+    return <Loader />;
   }
   if (isError) {
     return (

@@ -6,14 +6,7 @@ const newsSchema = (update) => {
     : Yup.string().required("Picture is required");
   return Yup.object().shape({
     title: Yup.string().required("Title is required"),
-    mainContent: Yup.array()
-      .of(
-        Yup.object().shape({
-          topic: Yup.string().required("Topic is required"),
-          content: Yup.string().required("Content is required"),
-        })
-      )
-      .required("Main content is required"),
+    mainContent: Yup.string().required("Main content is required"),
     picture,
   });
 };

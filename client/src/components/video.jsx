@@ -45,7 +45,7 @@ const Video = () => {
                 controls
                 style={{ width: "100%", height: "400px" }}
               >
-                <source src="path_to_video_file.mp4" type="video/mp4" />
+                <source src={layout.video} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             )}

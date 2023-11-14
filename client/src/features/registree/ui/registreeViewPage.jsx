@@ -64,7 +64,7 @@ const RegistreeView = ({ registree, course }) => {
           <div className="flex gap-4">
             <div className="flex-1">
               <img
-                className="w-full cursor-pointer "
+                className="w-full h-[200px] object-cover cursor-pointer "
                 onClick={() => {
                   setOpenModal(true);
                 }}
@@ -74,7 +74,7 @@ const RegistreeView = ({ registree, course }) => {
             </div>
             <div className="flex-1">
               <img
-                className="w-full cursor-pointer flex-1"
+                className="w-full h-[200px] object-cover   cursor-pointer flex-1"
                 onClick={() => {
                   setOpenModal2(true);
                 }}

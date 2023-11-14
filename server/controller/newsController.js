@@ -14,12 +14,8 @@ export const getNews = async (req, res) => {
 //@method POST /news
 //@access private
 export const createNews = async (req, res) => {
-  const mainContentString = req.body.mainContent;
-  const mainContent = JSON.parse(mainContentString);
-
   let newsBody = {
     ...req.body,
-    mainContent,
   };
   const news = await News.create(newsBody);
   if (news) {
@@ -47,12 +43,9 @@ export const deleteNews = async (req, res) => {
 //@access private
 export const updateNews = async (req, res) => {
   const { id } = req.params;
-  const mainContentString = req.body.mainContent;
-  const mainContent = JSON.parse(mainContentString);
 
   const body = {
     ...req.body,
-    mainContent,
   };
 
   const updatedNews = await News.findByIdAndUpdate(id, body, {

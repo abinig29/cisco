@@ -7,6 +7,7 @@ import moment from "moment";
 
 import BasicTable from "../../../components/table";
 import DeleteModal from "../../../components/deleteModal";
+import Loader from "../../../components/loader";
 
 const NewsList = () => {
   const { data, isLoading, isError, error, isSuccess } = useGetNewsQuery({
@@ -83,17 +84,7 @@ const NewsList = () => {
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-screen">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+        <Loader
         />
       </div>
     );

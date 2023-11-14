@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetSingleLayoutQuery } from "../features/layout/layoutApiSlice";
 import { motion } from "framer-motion";
+import hero from "../assets/hero.png";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Hero = () => {
       <div className="max-w-[1200px] mx-auto w-full h-full   items-center justify-center sm:flex-row flex-col text-slate-700 px-8 gap-4 bg-transparent flex">
         <motion.div
           initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0}}
+          animate={{ opacity: 1, x: 0 }}
           className="flex-[1]  space-y-3 flex flex-col items-center text-center sm:text-left sm:items-start justify-stretch order-2 sm:order-1 "
         >
           <h1 className="text-[30px] sm:text-[40px] font-poppins">
@@ -35,22 +36,28 @@ const Hero = () => {
           </button>
         </motion.div>
         <div className="flex-1 sm:p-0 relative order-1 sm:order-2 ">
-          {layout ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration:0.3
-              }}
-              // className="flex-[1]  space-y-3 flex flex-col items-center text-center order-2 sm:order-1 bg-red-800 "
-            >
-              <img
+          {/* {layout ? ( */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            {/* <img
                 src={layout?.picture}
                 alt="hero-img"
                 className="h-full w-full object-contain"
-              />
-            </motion.div>
-          ) : null}
+              /> */}
+            <img
+              src={hero}
+              alt="hero-img"
+              className="h-full w-full object-contain"
+            />
+          </motion.div>
+          {/* ) : (
+            null
+          )} */}
         </div>
       </div>
     </section>

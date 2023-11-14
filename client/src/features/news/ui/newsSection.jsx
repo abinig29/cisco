@@ -33,8 +33,8 @@ const News = ({ isLoading, error, news }) => {
   }
 
   return (
-    <div className=" grid lg:grid-cols-3 gap-4 mt-10 md:grid-cols-2 sm:grid-cols-1 ">
-      {news && news.length ? (
+    <div className=" grid  gap-6 mt-10 md:grid-cols-3 sm:grid-cols-2 ">
+      {news && news?.length ? (
         news.map((news) => {
           return <NewsCard key={news._id} news={news} />;
         })

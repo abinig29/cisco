@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { useGetCoursesQuery } from "../../courses/courseApiSillce";
+import Loader from "../../../components/loader";
 
 const RegistrationPage = () => {
   const { id } = useParams();
@@ -18,17 +19,7 @@ const RegistrationPage = () => {
     <RegistrationPageForm selectedCourse={course} courses={courses} />
   ) : (
     <div className="grid place-content-center  h-screen">
-      <Oval
-        height={60}
-        width={60}
-        color="#4fa94d"
-        wrapperStyle={{}}
-        wrapperClass=""
-        visible={true}
-        ariaLabel="oval-loading"
-        secondaryColor="#4fa94d"
-        strokeWidth={2}
-        strokeWidthSecondary={2}
+      <Loader
       />
     </div>
   );

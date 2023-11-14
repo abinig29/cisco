@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useGetNewsQuery } from "../newsApiSlice";
 import { Oval } from "react-loader-spinner";
 import moment from "moment";
+import { Preview } from "../../../components/preview";
+import Loader from "../../../components/loader";
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -12,17 +14,7 @@ const NewsDetail = () => {
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-[80vh]">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+        <Loader
         />
       </div>
     );
@@ -31,7 +23,6 @@ const NewsDetail = () => {
 };
 
 const NewsDetailpage = ({ news }) => {
-  console.log(news);
   return (
     <div className="bg-slate-100">
       <div className="flex flex-col max-w-[1000px] mx-auto min-h-[88vh] py-10 gap-4 px-6 md:px-0">
@@ -47,14 +38,7 @@ const NewsDetailpage = ({ news }) => {
           </h3>
         </div>
         <div className="font-poppins text-black">
-          {news.mainContent.map((v) => {
-            return (
-              <div className="mt-3 first:mt-0">
-                <h3 className="text-[18px] font-bold mb-2">{v.topic}</h3>
-                <h5>{v.content}</h5>
-              </div>
-            );
-          })}
+          <Preview value={news.mainContent} />
         </div>
       </div>
     </div>

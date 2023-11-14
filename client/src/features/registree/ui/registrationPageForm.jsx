@@ -11,6 +11,7 @@ import { gender, registreeType } from "../../../utils/utils";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { MdOutlineCrisisAlert } from "react-icons/md";
 import UploadFile from "../../../components/uploadFile";
+import CustomUpload from "../../../components/new-upload";
 
 const RegistrationPageForm = ({ courses, selectedCourse }) => {
   const [price, setPrice] = useState(courses[0][registreeType[0].key]);
@@ -24,7 +25,7 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
     picture: "",
     personalPicture: "",
     gender: "Male",
-    program:"Day",
+    program: "Day",
     registreeType: registreeType?.length && registreeType[0].key,
     course: selectedCourse
       ? selectedCourse._id
@@ -333,24 +334,20 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
                   </div>
                 )}
               </div>
-              <div className="md:flex md:gap-8">
-                <div className="flex-1">
-                  <UploadFile
-                    height={150}
+              <div className="">
+                <div className="">
+                  <CustomUpload
+                    textColor={"black"}
                     lable={"Bill photo"}
                     picture={values.picture}
-                    imgTouched={touched.picture}
-                    imgError={errors.picture}
                     setImg={(value) => setFieldValue("picture", value)}
                   />
                 </div>
-                <div className="flex-1">
-                  <UploadFile
-                    height={150}
+                <div>
+                  <CustomUpload
+                    textColor={"black"}
                     lable={"Personal photo"}
                     picture={values.personalPicture}
-                    imgTouched={touched.personalPicture}
-                    imgError={errors.personalPicture}
                     setImg={(value) => setFieldValue("personalPicture", value)}
                   />
                 </div>

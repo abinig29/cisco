@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import SideBarNavigation from "./sideBarNavigation";
 import DashbordHeader from "./dashbordHeader";
 import { Suspense } from "react";
+import Loader from "./loader";
 
 const DashBoardlayout = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -24,7 +25,7 @@ const DashBoardlayout = () => {
           <div className=" hidden sm:block w-[250px]" />
           <div className="flex-1">
             <DashbordHeader onClick={onClik} />
-            <Suspense fallback={<>loading...</>}>{<Outlet />}</Suspense>
+            <Suspense fallback={<Loader />}>{<Outlet />}</Suspense>
           </div>
         </div>
       </div>

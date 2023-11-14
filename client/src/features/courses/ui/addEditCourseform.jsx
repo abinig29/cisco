@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { selectRole } from "../../auth/authSlice";
 import { ROLES } from "../../../utils/utils";
 import UploadFile from "../../../components/uploadFile";
+import CustomUpload from "../../../components/new-upload";
 
 const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
   const isAdmin = useSelector(selectRole) === ROLES.admin;
@@ -590,33 +591,10 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
               )}
             </button>
           </div>
-          {/* <div
-            {...getRootProps({
-              className:
-                "w-full border-dashed border mt-4 cursor-pointer mb-4 h-[110px] text-white flex flex-col items-center justify-center",
-            })}
-          >
-            <input {...getInputProps()} />
-            {values.picture ? (
-              <>{values.picture.name}</>
-            ) : isDragActive ? (
-              <>Draging.... </>
-            ) : (
-              <div className=" py-3 flex flex-col items-center">
-                <FiUploadCloud className="text-[40px]" />
-                <h3>Drag and drop to upload</h3>
-                <h5>or browse</h5>
-              </div>
-            )}
-          </div> */}
-          <UploadFile
-            setDoneUploading={setDoneUploading}
-            height={150}
-            textColor={"text-white"}
+
+          <CustomUpload
             lable={"Cover photo"}
             picture={values.picture}
-            imgTouched={touched.picture}
-            imgError={errors.picture}
             setImg={(value) => setFieldValue("picture", value)}
           />
 

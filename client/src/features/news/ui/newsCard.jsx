@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const NewsCard = ({ news }) => {
   const navigate = useNavigate();
-  const displayContent = news.mainContent[0].content;
+
   return (
     <div
       className="cursor-pointer"
@@ -20,11 +20,7 @@ const NewsCard = ({ news }) => {
       </div>
       <h2 className="font-bold text-[20px]">{news.title}</h2>
       <h2 className=" text-[15px]">
-        {displayContent.length > 100 ? (
-          <span>{displayContent.substring(0, 100)}...</span>
-        ) : (
-          displayContent
-        )}
+       
       </h2>
       <h3 className="font-poppins mt-2">
         {moment(news.createdAt).format("MMMM Do YYYY, h:mm:ss a")}

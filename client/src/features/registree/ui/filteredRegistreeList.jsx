@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useDeleteRegistreeMutation,
   useGetRegistreesQuery,
@@ -7,8 +7,10 @@ import {
 import { Oval } from "react-loader-spinner";
 import BasicTable from "../../../components/table";
 import DeleteModal from "../../../components/deleteModal";
+import Loader from "../../../components/loader";
 
 const FilteredRegistreeList = () => {
+  const navigate = useNavigate();
   const { courseId } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [deletedId, setDeletedId] = useState("");
@@ -126,17 +128,7 @@ const FilteredRegistreeList = () => {
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-[90vh]">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+        <Loader
         />
       </div>
     );
@@ -144,9 +136,7 @@ const FilteredRegistreeList = () => {
   return (
     <div>
       <div className="px-10 py-6 flex justify-between ">
-        <h1 className=" font-poppins text-3xl text-white mb-2">
-          Registrees
-        </h1>
+        <h1 className=" font-poppins text-3xl text-white mb-2">Registrees</h1>
         <div
           className="bg-gray-700 px-10 py-[8px] cursor-pointer rounded relative w-52"
           onClick={() => setSlectModal((pre) => !pre)}
@@ -162,7 +152,7 @@ const FilteredRegistreeList = () => {
         openModal={openModal}
         setOpenModal={setOpenModal}
         onAction={onDelete}
-        deletedItemName={'registree'}
+        deletedItemName={"registree"}
       />
     </div>
   );

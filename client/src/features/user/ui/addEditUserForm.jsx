@@ -9,6 +9,7 @@ import { ROLES } from "../../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { useCreateUserMutation, useUpdateUserMutation } from "../userApiSlice";
 import UploadFile from "../../../components/uploadFile";
+import CustomUpload from "../../../components/new-upload";
 
 const AddCreateUserForm = ({ update, user }) => {
   const navigate = useNavigate();
@@ -255,14 +256,10 @@ const AddCreateUserForm = ({ update, user }) => {
           <button class="py-2.5 px-5 mr-2 text-sm opacity-0 hidden font-mediu cursor-none   rounded-lg  mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white md:inline-flex items-center">
             random
           </button>
-          <UploadFile
-            setDoneUploading={setDoneUploading}
-            height={150}
-            textColor={"text-white"}
+
+          <CustomUpload
             lable={"Cover photo"}
             picture={values.picture}
-            imgTouched={touched.picture}
-            imgError={errors.picture}
             setImg={(value) => setFieldValue("picture", value)}
           />
         </div>

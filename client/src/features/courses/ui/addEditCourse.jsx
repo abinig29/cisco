@@ -7,6 +7,7 @@ import { useGetUsersQuery } from "../../user/userApiSlice";
 import { useGetCoursesQuery } from "../courseApiSillce";
 import { NotFound } from "../../../components/notFound";
 import { useGetCatagoriesQuery } from "../../catagory/catagoryApiSlice";
+import Loader from "../../../components/loader";
 
 const AddEditCourse = () => {
   const { id } = useParams();
@@ -22,17 +23,7 @@ const AddEditCourse = () => {
   if (courseLoading || userLoading || catagoryLoading) {
     return (
       <div className="grid place-content-center  h-screen">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+        <Loader
         />
       </div>
     );

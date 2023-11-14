@@ -10,7 +10,7 @@ import { FaStarOfLife } from "react-icons/fa";
 
 const Hero = ({ layout, refetch }) => {
   const hero = layout.find((v) => v.hasOwnProperty("hero"));
-  console.log(layout);
+
   const heroUpdate = hero?.hero?.length;
   const [doneUploading, setDoneUploading] = useState(false);
 
@@ -29,14 +29,13 @@ const Hero = ({ layout, refetch }) => {
     title: heroUpdate ? hero.hero[0].hero.title : "",
     picture: heroUpdate ? hero.hero[0].hero.picture : "",
     subTitle: heroUpdate ? hero.hero[0].hero.subTitle : "",
-
   };
   const onSubmit = async (values, { resetForm }) => {
     const heroData = {};
     heroData.type = "hero";
     heroData.title = values.title;
     heroData.picture = values.picture;
-    heroData.subTitle=values.subTitle
+    heroData.subTitle = values.subTitle;
 
     try {
       if (heroUpdate) {
@@ -75,17 +74,6 @@ const Hero = ({ layout, refetch }) => {
       <h1 className=" font-poppins text-3xl text-white mb-2">Hero section</h1>
       <form onSubmit={handleSubmit}>
         <div className="max-w-[600px]">
-          <UploadFile
-            setDoneUploading={setDoneUploading}
-            height={150}
-            textColor={"text-white"}
-            lable={"Hero image"}
-            picture={values.picture}
-            error={errors.picture}
-            touched={touched.picture}
-            setImg={(value) => setFieldValue("picture", value)}
-          />
-
           <div className="mt-4">
             <div className="mb-4">
               <label

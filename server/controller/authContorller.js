@@ -54,7 +54,6 @@ export const logout = async (req, res) => {
 //@method GEt  /auth/refresh
 //@access public
 export const refreshToken = async (req, res) => {
-  console.log("blaha", req.cookies);
   const Jwt = req.cookies?.Jwt;
   if (!Jwt) throw new UnAuthenticatedError("Invalid credential");
   jwt.verify(Jwt, process.env.JWT_REFRESH_SECRET, async (err, decode) => {

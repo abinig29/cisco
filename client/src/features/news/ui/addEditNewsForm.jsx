@@ -8,9 +8,10 @@ import { FaStarOfLife } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useUpdateNewsMutation } from "../newsApiSlice";
 import { useCreateNewsMutation } from "../newsApiSlice";
-import { AiFillDelete, AiOutlinePlus } from "react-icons/ai";
-import { imgUrl } from "../../../utils/utils";
+
 import UploadFile from "../../../components/uploadFile";
+import { Editor } from "../../../components/editor";
+import CustomUpload from "../../../components/new-upload";
 
 const AddCreateNewsForm = ({ news, update }) => {
   const navigate = useNavigate();
@@ -37,11 +38,10 @@ const AddCreateNewsForm = ({ news, update }) => {
     const newsData = {};
     newsData.title = values.title;
     newsData.picture = values.picture;
-    newsData.mainContent = JSON.stringify(values.mainContent);
+    newsData.mainContent = values.mainContent;
 
     try {
       if (update) {
-        
         await updateNews({ news: newsData, id: news._id }).unwrap();
       } else {
         await createNews(newsData).unwrap();
@@ -52,7 +52,7 @@ const AddCreateNewsForm = ({ news, update }) => {
 
   const initialValues = {
     title: update ? news?.title : "",
-    mainContent: update ? news?.mainContent : [{ topic: "", content: "" }],
+    mainContent: update ? news?.mainContent : "",
     picture: update ? news.picture : "",
   };
   const {
@@ -62,8 +62,7 @@ const AddCreateNewsForm = ({ news, update }) => {
     setValues,
     setFieldValue,
     handleSubmit,
-    handleChange,
-    handleBlur,
+
     getFieldProps,
   } = useFormik({
     initialValues,
@@ -71,24 +70,6 @@ const AddCreateNewsForm = ({ news, update }) => {
     onSubmit,
   });
 
-  const handleAddItem = () => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      mainContent: [...prevValues.mainContent, { topic: "", content: "" }],
-    }));
-  };
-  const handleRemoveItem = (index) => {
-    console.log({ index });
-    if (values.mainContent.length === 1) return;
-    setValues((prevValues) => {
-      const updatedMainContent = [...prevValues.mainContent];
-      updatedMainContent.splice(index, 1);
-      return {
-        ...prevValues,
-        mainContent: updatedMainContent,
-      };
-    });
-  };
   useEffect(() => {
     if (values.picture) setDoneUploading(true);
   }, [values.picture]);
@@ -166,76 +147,11 @@ const AddCreateNewsForm = ({ news, update }) => {
                 }
               </span>
             </label>
-            {values.mainContent.map((content, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-start bg-slate-600/20 p-4 mt-2 rounded-md"
-              >
-                <label
-                  htmlFor={`mainContent[${index}].topic`}
-                  className="block mb-2 text-sm font-medium  text-white"
-                >
-                  Topic
-                </label>
-                <input
-                  type="text"
-                  id={`mainContent[${index}].topic`}
-                  name={`mainContent[${index}].topic`}
-                  value={values.mainContent[index].topic}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className="border text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white "
-                />
-                {touched.mainContent &&
-                  touched.mainContent[index] &&
-                  errors.mainContent &&
-                  errors.mainContent[index] && (
-                    <div className="text-sm text-red-600 dark:text-red-500">
-                      {errors.mainContent[index].topic}
-                    </div>
-                  )}
-
-                <label
-                  className="block mb-2 text-sm font-medium  text-white"
-                  htmlFor={`mainContent[${index}].content`}
-                >
-                  Content
-                </label>
-                <textarea
-                  id={`mainContent[${index}].content`}
-                  name={`mainContent[${index}].content`}
-                  value={values.mainContent[index].content}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  col={20}
-                  className="border text-sm rounded-lg  block w-full py-5 px-2  bg-gray-700 border-gray-600 text-white "
-                />
-                {touched.mainContent &&
-                  touched.mainContent[index] &&
-                  errors.mainContent &&
-                  errors.mainContent[index] && (
-                    <div className="text-sm text-red-600 dark:text-red-500">
-                      {errors.mainContent[index].content}
-                    </div>
-                  )}
-                <button
-                  type="button"
-                  className="bg-red-500p-2 self-end mt-2 rounded-full bg-red-400 p-1"
-                  onClick={() => handleRemoveItem(index)}
-                >
-                  <AiFillDelete className="text-[20px] text-white " />
-                </button>
-              </div>
-            ))}
+            <Editor
+              value={values.mainContent}
+              onChange={(value) => setFieldValue("mainContent", value)}
+            />
           </div>
-          <button
-            type="button"
-            class=" p-2 mt-2 md:inline-flex   rounded-full  text-sm font-medium   cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white  items-center"
-            onClick={() => handleAddItem()}
-          >
-            <AiOutlinePlus className="" />
-            {/* Add content */}
-          </button>
         </div>
         <div className="flex-1">
           <button
@@ -245,7 +161,7 @@ const AddCreateNewsForm = ({ news, update }) => {
             news
           </button>
 
-          <UploadFile
+          {/* <UploadFile
             setDoneUploading={setDoneUploading}
             height={150}
             textColor={"text-white"}
@@ -253,6 +169,11 @@ const AddCreateNewsForm = ({ news, update }) => {
             picture={values.picture}
             imgTouched={touched.picture}
             imgError={errors.picture}
+            setImg={(value) => setFieldValue("picture", value)}
+          /> */}
+          <CustomUpload
+            lable={"Cover photo"}
+            picture={values.picture}
             setImg={(value) => setFieldValue("picture", value)}
           />
         </div>
