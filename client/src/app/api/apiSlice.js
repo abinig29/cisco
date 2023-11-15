@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setToken } from "../../features/auth/authSlice";
 const baseQuery = fetchBaseQuery({
   // baseUrl: "https://cisco-5aze.onrender.com/api/v1",
-  // baseUrl: "http://localhost:5001/api/v1",
-  baseUrl:'https://cisco-0p6y.onrender.com/api/v1',
+  baseUrl: "http://localhost:5001/api/v1",
+  // baseUrl:'https://cisco-0p6y.onrender.com/api/v1',
   
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
