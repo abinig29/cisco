@@ -42,7 +42,7 @@ const app = express();
 if ((process.env.NODE_ENV = "development")) {
   app.use(morgan("common"));
 }
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json({ extends: true, limit: "30mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
