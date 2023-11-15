@@ -44,10 +44,10 @@ if ((process.env.NODE_ENV = "development")) {
 }
 // app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", [
-    "https://cisco-course-registration.netlify.app",
-    "https://cisco-registration.netlify.app/",
-  ]);
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://cisco-course-registration.netlify.app"
+  );
   res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
