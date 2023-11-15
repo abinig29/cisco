@@ -1,6 +1,6 @@
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://cisco-course-registration.netlify.app/",
+  "https://cisco-course-registration.netlify.app",
   "https://cisco-registration.netlify.app/",
 ];
 
