@@ -18,7 +18,10 @@ const userSchema = new mongoose.Schema(
     picture: String,
     password: {
       type: String,
-      required: [true, "must provide password"],
+    },
+    firstTimeLogin: {
+      type: Boolean,
+      default: true,
     },
     role: {
       type: String,

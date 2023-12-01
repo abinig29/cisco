@@ -1,6 +1,8 @@
 import User from "../model/userModel.js";
 import { BadRequestError, NotFoundError } from "../error/index.js";
 import bcrypt from "bcrypt";
+import randomstring from "randomstring";
+import { sendMail } from "../utills/send-mail.js";
 
 //@desc create new user
 //@method POST /user
@@ -9,8 +11,21 @@ export const createUser = async (req, res) => {
   const { email } = req.body;
   const duplicate = await User.findOne({ email }).lean().exec();
   if (duplicate) throw new BadRequestError("user found with this email");
-  const user = await User.create(req.body);
+  const randomPassword = randomstring.generate(8);
+  const body = { ...req.body, password: randomPassword };
+  const user = await User.create(body);
   if (user) {
+    console.log("User created");
+    await sendMail({
+      email: req.body.email,
+      subject: "Password for your account",
+      template: "password-mail.ejs",
+      data: {
+        user: req.body.firstName,
+        password: randomPassword,
+      },
+    });
+    console.log("User create plus email is sent");
     res.status(201).json(user);
   } else {
     throw new BadRequestError("Invalid user credential");

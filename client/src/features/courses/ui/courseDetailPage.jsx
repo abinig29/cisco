@@ -8,6 +8,7 @@ import { NotFound } from "../../../components/notFound";
 import { CiCalendarDate } from "react-icons/ci";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { MdOutlineCrisisAlert } from "react-icons/md";
+import Loader from "../../../components/loader";
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -16,17 +17,7 @@ const CourseDetailPage = () => {
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-[80vh]">
-        <Oval
-          height={60}
-          width={60}
-          color="#4fa94d"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-          ariaLabel="oval-loading"
-          secondaryColor="#4fa94d"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+        <Loader
         />
       </div>
     );
@@ -109,7 +100,7 @@ const CourseDetail = ({ course }) => {
             </div>
             <button
               onClick={() => navigate(`/${course._id}/register`)}
-              className="px-6 bg-[#427cce] text-white  text-xl py-3 rounded-full focus:scale-110 hover:scale-110 active:scale-[1.05]"
+              className="px-6 bg-[#427cce] text-white  text-xl py-3 rounded-full focus:scale-110 hover:scale-[1.03] active:scale-[1.05]"
             >
               Enroll now
             </button>

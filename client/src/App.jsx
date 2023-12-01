@@ -32,11 +32,13 @@ import RegistrationPage from "./features/registree/ui/registrationPage";
 import SuccessFullPage from "./pages/successFullPage";
 import CourseDetailPage from "./features/courses/ui/courseDetailPage";
 import { useSelector } from "react-redux";
-import { selectRole } from "./features/auth/authSlice";
-
+import { selectFirstTimeLogin, selectRole } from "./features/auth/authSlice";
+import ResetPasswordForm from "./pages/changePassword";
 
 function App() {
   const role = useSelector(selectRole);
+  const firstTimeLogin = useSelector(selectFirstTimeLogin);
+  console.
   return (
     <>
       <Routes>
@@ -49,6 +51,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="news/:id" element={<NewsDetail />} />
             <Route path="course/:id" element={<CourseDetailPage />} />
+            <Route path="auth/changePassword" element={<ResetPasswordForm />} />
             <Route path="register" element={<RegistrationPage />} />
             <Route path=":id/register" element={<RegistrationPage />} />
             <Route path=":id/sucessfull" element={<SuccessFullPage />} />
@@ -63,7 +66,9 @@ function App() {
               <Route
                 index
                 element={
-                  role == "Admin" ? (
+                  firstTimeLogin ? (
+                    <Navigate to="/auth/changePassword" />
+                  ) : role === "Admin" ? (
                     <Navigate to="registrees" />
                   ) : (
                     <Navigate to="courses" />

@@ -63,7 +63,6 @@ const AddCreateUserForm = ({ update, user }) => {
     email: update ? user?.email : "",
     picture: update ? user?.picture : "",
     role: update ? user?.role : "Lecture",
-    password: "",
   };
   const {
     touched,
@@ -74,7 +73,7 @@ const AddCreateUserForm = ({ update, user }) => {
     getFieldProps,
   } = useFormik({
     initialValues,
-    validationSchema: userSchema(update),
+    validationSchema: userSchema,
     onSubmit,
   });
 
@@ -198,31 +197,6 @@ const AddCreateUserForm = ({ update, user }) => {
             {touched.email && errors.email && (
               <p className="text-sm text-red-600 dark:text-red-500">
                 {errors.email}
-              </p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              for="password"
-              className="block mb-2 text-sm font-medium  text-white"
-            >
-              Password
-              <span>
-                {!update && (
-                  <FaStarOfLife className=" text-red-900 text-[10px] inline ml-1" />
-                )}
-              </span>
-            </label>
-            <input
-              type="text"
-              {...getFieldProps("password")}
-              id="password"
-              className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
-            />
-
-            {touched.password && errors.password && (
-              <p className="text-sm text-red-600 dark:text-red-500">
-                {errors.password}
               </p>
             )}
           </div>

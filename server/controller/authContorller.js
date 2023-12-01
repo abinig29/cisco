@@ -13,7 +13,7 @@ import bcrypt from "bcrypt";
 export const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) throw new UnAuthenticatedError("Invalid credential");
-  const user = await User.findOne({ email }).lean().exec();
+  const user = await User.findOne({ email }).exec();
   if (!user) throw new BadRequestError("invalid credential");
   const match = await bcrypt.compare(password, user.password);
 
@@ -45,9 +45,26 @@ export const login = async (req, res) => {
 //@access public
 export const logout = async (req, res) => {
   const Jwt = req.cookies?.Jwt;
-  if (!Jwt) return res.status(204).json({message:"wasnt there"});
+  if (!Jwt) return res.status(204).json({ message: "wasnt there" });
   res.cookie("Jwt", "");
   res.json({ message: "Cookie cleared" });
+};
+
+export const changePassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+  
+  const user = await User.findOne({ email }).exec();
+  console.log(user)
+  if (!user) throw new BadRequestError("No user found");
+  console.log(user.firstTimeLogin)
+  if (!user.firstTimeLogin) {
+    throw new BadRequestError("Please ask requet first");
+  }
+
+  user.password = newPassword;
+  user.firstTimeLogin = false;
+  await user.save();
+  return res.status(200).json({ message: "password change successfully" });
 };
 
 //@desc token refreshh

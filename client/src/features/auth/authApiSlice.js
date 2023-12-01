@@ -19,12 +19,23 @@ const authApiSlice = apiSlice.injectEndpoints({
               firstName: user.firstName,
               role: user.role,
               picture: user.picture,
+              email: user.email,
               id: user._id,
+              firstTimeLogin: user.firstTimeLogin,
             })
           );
         } catch (err) {
           console.log(err);
         }
+      },
+    }),
+    changePassword: builder.mutation({
+      query: ({ email, newPassword }) => {
+        return {
+          url: `/auth/changePassword`,
+          method: "PATCH",
+          body: { email, newPassword },
+        };
       },
     }),
 
@@ -37,7 +48,7 @@ const authApiSlice = apiSlice.injectEndpoints({
         try {
           console.log("logout please");
           await queryFulfilled;
-          console.log('2')
+          console.log("2");
           dispatch(setCredentialNull());
         } catch (err) {
           console.log(err);
@@ -62,5 +73,9 @@ const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useSendLogoutMutation, useRefreshMutation } =
-  authApiSlice;
+export const {
+  useLoginMutation,
+  useSendLogoutMutation,
+  useRefreshMutation,
+  useChangePasswordMutation,
+} = authApiSlice;
