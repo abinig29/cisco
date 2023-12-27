@@ -9,6 +9,7 @@ import { Oval } from "react-loader-spinner";
 import { NotFound } from "../../../components/notFound";
 import { registreeType } from "../../../utils/utils";
 import ImageModal from "../../../components/imageModal";
+import Loader from "../../../components/loader";
 
 const RegistreeviewPage = () => {
   const { id } = useParams();
@@ -18,8 +19,7 @@ const RegistreeviewPage = () => {
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-screen">
-         <Loader
-        />
+        <Loader />
       </div>
     );
   }

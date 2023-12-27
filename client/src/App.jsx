@@ -38,7 +38,7 @@ import ResetPasswordForm from "./pages/changePassword";
 function App() {
   const role = useSelector(selectRole);
   const firstTimeLogin = useSelector(selectFirstTimeLogin);
-  console.
+
   return (
     <>
       <Routes>

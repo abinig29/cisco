@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 const SuccessFullPage = () => {
     const navigate = useNavigate()
-    const location = useLocation();
-    const { course, isRegisterd } = location.state || {};
+  {  const location = useLocation();
+    const { course, isRegisterd } = location.state || {};}
     useEffect(() => {
         if (!isRegisterd) {
             navigate('/')
