@@ -11,11 +11,9 @@ export const getAllLayout = async (req, res) => {
   const video = await Layout.find({ type: "video" });
   const hero = await Layout.find({ type: "hero" });
 
-  res
-    .status(200)
-    .json({
-      layout: [{ banner }, { faq }, { aboutContent }, { video }, { hero }],
-    });
+  res.status(200).json({
+    layout: [{ banner }, { faq }, { aboutContent }, { video }, { hero }],
+  });
 };
 
 //@desc get  layout by type
@@ -33,6 +31,7 @@ export const getSingleLayout = async (req, res) => {
 //@access private
 export const createLayout = async (req, res) => {
   const { type } = req.body;
+  const picture = req?.file?.filename;
   const preLayout = await Layout.find({ type });
 
   if (preLayout.length) {
@@ -59,7 +58,7 @@ export const createLayout = async (req, res) => {
       banner: {
         title: req.body.title,
         subTitle: req.body.subTitle,
-        picture: req.body.picture,
+        picture,
       },
     };
     const newBanner = await Layout.create(body);
@@ -89,7 +88,7 @@ export const createLayout = async (req, res) => {
       type: "hero",
       hero: {
         title: req.body.title,
-        picture: req.body.picture,
+        picture,
         subTitle: req.body.subTitle,
       },
     };
@@ -107,7 +106,7 @@ export const createLayout = async (req, res) => {
         video: req.body.video,
         title: req.body.title,
         subTitle: req.body.subTitle,
-        banner: req.body.banner,
+        banner: picture,
       },
     };
     console.log(body);
@@ -140,7 +139,9 @@ export const deleteLayout = async (req, res) => {
 export const updateLayout = async (req, res) => {
   const { type } = req.body;
   const preLayout = await Layout.find({ type });
-  console.log(preLayout);
+  const picture = req?.file?.filename;
+  console.log(req?.file);
+
   if (!preLayout.length) {
     throw new BadRequestError("This layout type  doesnt exists before ");
   }
@@ -166,7 +167,7 @@ export const updateLayout = async (req, res) => {
       banner: {
         title: req.body.title,
         subTitle: req.body.subTitle,
-        picture: req.body.picture,
+        picture: picture ? picture : preLayout[0].picture,
       },
     };
 
@@ -227,7 +228,7 @@ export const updateLayout = async (req, res) => {
         video: req.body.video,
         title: req.body.title,
         subTitle: req.body.subTitle,
-        banner: req.body.banner,
+        banner: picture ? picture : preLayout[0].banner,
       },
     };
     const updatedVideo = await Layout.findByIdAndUpdate(
@@ -240,5 +241,5 @@ export const updateLayout = async (req, res) => {
     } else {
       throw new BadRequestError("Invalid layout information provided");
     }
-  } else return BadRequestError("Provided with wrong layout type");
+  } else throw new BadRequestError("Provided with wrong layout type");
 };

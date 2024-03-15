@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useFormik } from "formik";
 import { userSchema } from "../userSchema";
 import { FaStarOfLife } from "react-icons/fa";
-import { ROLES } from "../../../utils/utils";
+import { ROLES, imgUrl } from "../../../utils/utils";
 
 import { useNavigate } from "react-router-dom";
 import { useCreateUserMutation, useUpdateUserMutation } from "../userApiSlice";
@@ -39,29 +39,37 @@ const AddCreateUserForm = ({ update, user }) => {
     );
   });
 
-  const onSubmit = async (values, { resetForm }) => {
-    const userData = { ...values };
+  const onSubmit = async (data, { resetForm }) => {
+    const formData = new FormData();
+    if (!data.picture) {
+      return;
+    } else {
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("email", data.email);
+      formData.append("role", data.role);
+      formData.append("password", data.password);
+      formData.append("picture", data.picture);
 
-    if (update) {
-      if (!values.password) {
-        delete userData.password;
+      if (update && !values.password) {
+        formData.delete("password");
       }
+      try {
+        if (update) {
+          await updateUser({ user: formData, id: user._id }).unwrap();
+        } else {
+          await createUser(formData).unwrap();
+        }
+        resetForm();
+      } catch (error) {}
     }
-    try {
-      if (update) {
-        await updateUser({ user: userData, id: user._id }).unwrap();
-      } else {
-        await createUser(userData).unwrap();
-      }
-      resetForm();
-    } catch (error) {}
   };
 
   const initialValues = {
     firstName: update ? user?.firstName : "",
     lastName: update ? user?.lastName : "",
     email: update ? user?.email : "",
-    picture: update ? user?.picture : "",
+    picture: update ? imgUrl + user?.picture : "",
     role: update ? user?.role : "Lecture",
   };
   const {
@@ -73,13 +81,9 @@ const AddCreateUserForm = ({ update, user }) => {
     getFieldProps,
   } = useFormik({
     initialValues,
-    validationSchema: userSchema,
+    validationSchema: userSchema(update),
     onSubmit,
   });
-
-  useEffect(() => {
-    if (values.picture) setDoneUploading(true);
-  }, [values.picture]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -87,7 +91,7 @@ const AddCreateUserForm = ({ update, user }) => {
         <div className="flex-1">
           <button
             type="submit"
-            disabled={isLoading || isUpdateLoading || !doneUploading}
+            disabled={isLoading || isUpdateLoading}
             class="py-2.5 px-5 mr-2 text-sm font-medium disabled:bg-[#31296471] disabled:cursor-not-allowed   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
           >
             {isLoading || isUpdateLoading ? (
@@ -140,7 +144,6 @@ const AddCreateUserForm = ({ update, user }) => {
               {...getFieldProps("firstName")}
               id="firstName"
               className=" border text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white "
-              placeholder="Abel"
             />
             {touched.firstName && errors.firstName && (
               <p className="text-sm text-red-600 dark:text-red-500">
@@ -165,7 +168,6 @@ const AddCreateUserForm = ({ update, user }) => {
               {...getFieldProps("lastName")}
               id="lastName"
               className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
-              placeholder="Green"
             />
 
             {touched.lastName && errors.lastName && (
@@ -191,7 +193,31 @@ const AddCreateUserForm = ({ update, user }) => {
               {...getFieldProps("email")}
               id="email"
               className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
-              placeholder="abelnigus@gmail.com"
+            />
+
+            {touched.email && errors.email && (
+              <p className="text-sm text-red-600 dark:text-red-500">
+                {errors.email}
+              </p>
+            )}
+          </div>
+          <div className="mb-4">
+            <label
+              for="password"
+              className="block mb-2 text-sm font-medium  text-white"
+            >
+              Password
+              <span>
+                {!update && (
+                  <FaStarOfLife className=" text-red-900 text-[10px] inline ml-1" />
+                )}
+              </span>
+            </label>
+            <input
+              type="text"
+              {...getFieldProps("password")}
+              id="password"
+              className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
             />
 
             {touched.email && errors.email && (
@@ -227,7 +253,10 @@ const AddCreateUserForm = ({ update, user }) => {
           </div>
         </div>
         <div className="flex-1">
-          <button class="py-2.5 px-5 mr-2 text-sm opacity-0 hidden font-mediu cursor-none   rounded-lg  mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white md:inline-flex items-center">
+          <button
+            type="button"
+            class="py-2.5 px-5 mr-2 text-sm opacity-0 hidden font-mediu cursor-none   rounded-lg  mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white md:inline-flex items-center"
+          >
             random
           </button>
 

@@ -5,8 +5,12 @@ import { BadRequestError, NotFoundError } from "../error/index.js";
 //@method POST /registree
 //@access public
 export const createRegistree = async (req, res) => {
+  const body = req?.body;
+  if (req?.files?.picture) body["picture"] = req?.files?.picture?.[0]?.filename;
+  if (req?.files?.personalPicture)
+    body["personalPicture"] = req?.files?.personalPicture?.[0]?.filename;
   const user = await Registree.create({
-    ...req.body,
+    ...body,
   });
   if (user) {
     res.status(201).json(user);

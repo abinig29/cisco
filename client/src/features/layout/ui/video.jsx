@@ -7,12 +7,13 @@ import {
 import { useFormik } from "formik";
 import { videoSchema } from "../schema";
 import { FaStarOfLife } from "react-icons/fa";
+import CustomUpload from "../../../components/new-upload";
+import { imgUrl } from "../../../utils/utils";
 
 const Video = ({ layout, refetch }) => {
   const video = layout.find((v) => v.hasOwnProperty("video"));
   const videoUpdate = video?.video?.length;
   const [doneUploading, setDoneUploading] = useState(false);
-  const [doneUploading2, setDoneUploading2] = useState(false);
 
   const [createLayout, { isError, error, isSuccess, isLoading }] =
     useCreateLayoutMutation();
@@ -29,21 +30,21 @@ const Video = ({ layout, refetch }) => {
     title: videoUpdate ? video.video[0].video.title : "",
     subTitle: videoUpdate ? video.video[0].video.subTitle : "",
     video: videoUpdate ? video.video[0].video.video : "",
-    banner: videoUpdate ? video.video[0].video.banner : "",
+    banner: videoUpdate ? imgUrl + video.video[0].video.banner : "",
   };
   const onSubmit = async (values, { resetForm }) => {
-    const newsData = {};
-    newsData.type = "video";
-    newsData.title = values.title;
-    newsData.subTitle = values.subTitle;
-    newsData.video = values.video;
-    newsData.banner = values.banner;
+    const formData = new FormData();
+    formData.append("type", "video");
+    formData.append("title", values.title);
+    formData.append("subTitle", values.subTitle);
+    formData.append("picture", values.banner);
+    formData.append("video", values.video);
 
     try {
       if (videoUpdate) {
-        await updateLayout(newsData).unwrap();
+        await updateLayout(formData).unwrap();
       } else {
-        await createLayout(newsData).unwrap();
+        await createLayout(formData).unwrap();
       }
       resetForm();
     } catch (error) {}
@@ -69,7 +70,6 @@ const Video = ({ layout, refetch }) => {
 
   useEffect(() => {
     if (values.video) setDoneUploading(true);
-    if (values.banner) setDoneUploading2(true);
   }, [values.video, values.banner]);
 
   return (
@@ -92,14 +92,9 @@ const Video = ({ layout, refetch }) => {
               />
             </div>
             <div className="flex-1">
-              <UploadFile
-                setDoneUploading={setDoneUploading2}
-                height={150}
-                textColor={"text-white"}
-                lable={"Banner image before video loads"}
+              <CustomUpload
+                lable={"Cover photo"}
                 picture={values.banner}
-                error={errors.banner}
-                touched={touched.banner}
                 setImg={(value) => setFieldValue("banner", value)}
               />
             </div>
@@ -160,9 +155,7 @@ const Video = ({ layout, refetch }) => {
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={
-              isLoading || isUpdateLoading || !doneUploading || !doneUploading2
-            }
+            disabled={isLoading || isUpdateLoading || !doneUploading}
             className="bg-[#432830] disabled:bg-[#43283067] disabled:cursor-not-allowed  px-3 py-2 rounded-lg text-white inline-flex items-center"
           >
             {isLoading || isUpdateLoading ? (

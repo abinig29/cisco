@@ -38,16 +38,28 @@ const RegistrationPageForm = ({ courses, selectedCourse }) => {
     useCreateRegistreeMutation();
 
   const onSubmit = async (values, { resetForm }) => {
-    console.log(values);
     const selectedcourseId = values.course;
     const selectedCourse = courses.find(
       (course) => course._id === selectedcourseId
     ).courseName;
 
+    const formData = new FormData();
+    formData.append("firstName", values?.firstName);
+    formData.append("lastName", values?.lastName);
+    formData.append("email", values?.email);
+    formData.append("picture", values?.picture);
+    formData.append("personalPicture", values?.personalPicture);
+    formData.append("gender", values?.gender);
+    formData.append("program", values?.program);
+    formData.append("registreeType", values?.registreeType);
+    formData.append("course", values?.course);
+    formData.append("phoneNumber", values?.phoneNumber);
+
     try {
-      const { _id: id } = await createRegistree(values).unwrap();
+      const { _id: id } = await createRegistree(formData).unwrap();
       const data = { course: selectedCourse, isRegisterd: true };
       resetForm();
+      console.log(id);
       navigate(`/${id}/sucessfull`, { replace: true, state: data });
     } catch (error) {}
   };

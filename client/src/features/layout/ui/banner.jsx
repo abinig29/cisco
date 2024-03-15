@@ -11,6 +11,7 @@ import {
 } from "../layoutApiSlice";
 import { IoAlertOutline } from "react-icons/io5";
 import UploadFile from "../../../components/uploadFile";
+import CustomUpload from "../../../components/new-upload";
 
 const Banner = ({ layout, refetch }) => {
   const banner = layout.find((v) => v.hasOwnProperty("banner"));
@@ -35,25 +36,25 @@ const Banner = ({ layout, refetch }) => {
   }, [isSuccess, isUpdateSuccess]);
 
   const onSubmit = async (values, { resetForm }) => {
-    const newsData = {};
-    newsData.type = "banner";
-    newsData.title = values.title;
-    newsData.picture = values.picture;
-    newsData.subTitle = values.subTitle;
+    const bannerData = new FormData();
+    bannerData.append("type", "banner");
+    bannerData.append("title", values.title);
+    bannerData.append("subTitle", values.subTitle);
+    bannerData.append("picture", values.picture);
+
     try {
       if (bannerUpdate) {
-        await updateLayout(newsData).unwrap();
+        await updateLayout(bannerData).unwrap();
       } else {
-        await createLayout(newsData).unwrap();
+        await createLayout(bannerData).unwrap();
       }
       resetForm();
     } catch (error) {}
   };
-
   const initialValues = {
     title: bannerUpdate ? banner.banner[0].banner.title : "",
     subTitle: bannerUpdate ? banner.banner[0].banner.subTitle : "",
-    picture: bannerUpdate ? `${banner.banner[0].banner.picture}` : "",
+    picture: bannerUpdate ? imgUrl + `${banner.banner[0].banner.picture}` : "",
   };
 
   const {
@@ -79,12 +80,9 @@ const Banner = ({ layout, refetch }) => {
         <div className=" w-full ">
           <div className="flex md:flex-row flex-col  ">
             <div className="flex-1   ">
-              <UploadFile
-                textColor={"text-white"}
+              <CustomUpload
                 lable={"Banner photo"}
                 picture={values.picture}
-                imgTouched={touched.picture}
-                imgError={errors.picture}
                 setImg={(value) => setFieldValue("picture", value)}
               />
             </div>

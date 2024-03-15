@@ -54,8 +54,6 @@ const CoursesList = () => {
     if (deleteIsSuccess) {
       const course = FilterdCourse.find((v) => v._id == deletedId);
       const courseBannerPath = course?.picture;
-      console.log(courseBannerPath);
-      deleteFile(courseBannerPath);
     }
   }, [deleteIsSuccess]);
   const columns = [

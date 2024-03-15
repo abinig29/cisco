@@ -32,12 +32,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPass = await bcrypt.hash(this.password, salt);
-  this.password = hashedPass;
-  next();
-});
+// userSchema.pre("save", async function (next) {
+//   const salt = await bcrypt.genSalt(10);
+//   const hashedPass = await bcrypt.hash(this.password, salt);
+//   this.password = hashedPass;
+//   next();
+// });
 userSchema.methods.generateAccessToken = function () {
   const userInfo = {
     userId: this._id,

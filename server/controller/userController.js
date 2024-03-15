@@ -8,11 +8,13 @@ import { sendMail } from "../utills/send-mail.js";
 //@method POST /user
 //@access private
 export const createUser = async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
+  const picture = req?.file?.filename;
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass = await bcrypt.hash(password, salt);
   const duplicate = await User.findOne({ email }).lean().exec();
   if (duplicate) throw new BadRequestError("user found with this email");
-  const randomPassword = randomstring.generate(8);
-  const body = { ...req.body, password: randomPassword };
+  const body = { ...req.body, picture, password: hashedPass };
   const user = await User.create(body);
   if (user) {
     console.log("User created");
@@ -22,7 +24,7 @@ export const createUser = async (req, res) => {
       template: "password-mail.ejs",
       data: {
         user: req.body.firstName,
-        password: randomPassword,
+        password,
       },
     });
     console.log("User create plus email is sent");
@@ -58,7 +60,13 @@ export const updateUser = async (req, res) => {
     const hashedPass = await bcrypt.hash(req.body.password, salt);
     req.body.password = hashedPass;
   }
-  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+  const picture = req?.file?.filename ? req?.file?.filename : user?.picture;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    { ...req.body, picture },
+    { new: true }
+  );
   // console.log(updatedUser);
   if (updatedUser) {
     res.status(200).json(updatedUser);

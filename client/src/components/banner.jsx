@@ -12,7 +12,6 @@ const Banner = () => {
   });
   const layout = data?.layout[0]?.banner;
   if (isLoading) return <BannerLoader />;
-  console.log(layout);
 
   return (
     layout && (
@@ -20,7 +19,11 @@ const Banner = () => {
         <div className="lg:max-w-[1200px] mx-auto w-full">
           <div className="flex md:flex-row flex-col items-center">
             <div className="flex-1 p-10">
-              <img className="w-full rounded" src={layout.picture} alt="" />
+              <img
+                className="w-full rounded"
+                src={imgUrl + layout.picture}
+                alt=""
+              />
             </div>
             <div className="flex-1 flex flex-col gap-4 items-center  p-10">
               <h1 className="font-popin text-[25px]">{layout.title}</h1>

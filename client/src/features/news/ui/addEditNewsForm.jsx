@@ -12,10 +12,10 @@ import { useCreateNewsMutation } from "../newsApiSlice";
 import UploadFile from "../../../components/uploadFile";
 import { Editor } from "../../../components/editor";
 import CustomUpload from "../../../components/new-upload";
+import { imgUrl } from "../../../utils/utils";
 
 const AddCreateNewsForm = ({ news, update }) => {
   const navigate = useNavigate();
-  const [doneUploading, setDoneUploading] = useState(false);
   const [createNews, { isError, error, isSuccess, isLoading }] =
     useCreateNewsMutation();
   const [
@@ -35,16 +35,16 @@ const AddCreateNewsForm = ({ news, update }) => {
   }, [isSuccess, isUpdateSuccess, navigate]);
 
   const onSubmit = async (values, { resetForm }) => {
-    const newsData = {};
-    newsData.title = values.title;
-    newsData.picture = values.picture;
-    newsData.mainContent = values.mainContent;
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("picture", values.picture);
+    formData.append("mainContent", values.mainContent);
 
     try {
       if (update) {
-        await updateNews({ news: newsData, id: news._id }).unwrap();
+        await updateNews({ news: formData, id: news._id }).unwrap();
       } else {
-        await createNews(newsData).unwrap();
+        await createNews(formData).unwrap();
       }
       resetForm();
     } catch (error) {}
@@ -53,7 +53,7 @@ const AddCreateNewsForm = ({ news, update }) => {
   const initialValues = {
     title: update ? news?.title : "",
     mainContent: update ? news?.mainContent : "",
-    picture: update ? news.picture : "",
+    picture: update ? imgUrl + news.picture : "",
   };
   const {
     touched,
@@ -70,17 +70,13 @@ const AddCreateNewsForm = ({ news, update }) => {
     onSubmit,
   });
 
-  useEffect(() => {
-    if (values.picture) setDoneUploading(true);
-  }, [values.picture]);
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col md:flex-row  gap-10 mx-10 mt-[30px]">
         <div className="flex-1">
           <button
             type="submit"
-            disabled={isLoading || isUpdateLoading || !doneUploading}
+            disabled={isLoading || isUpdateLoading}
             class="py-2.5 px-5 mr-2 disabled:bg-[#31296471] disabled:cursor-not-allowed  text-sm font-medium  rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
           >
             {isLoading || isUpdateLoading ? (

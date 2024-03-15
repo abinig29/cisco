@@ -13,11 +13,10 @@ const AddEditUser = () => {
   const { data: users, isLoading } = useGetUsersQuery({});
   const user = users?.users.find((user) => user._id === id);
 
-  if (isLoading)
+  if (isLoading && update)
     return (
       <div className="grid place-content-center  h-screen">
-        <Loader
-        />
+        <Loader />
       </div>
     );
 
@@ -28,7 +27,7 @@ const AddEditUser = () => {
       <NotFound />
     )
   ) : (
-    <AddCreateUserForm user={user} update={update} />
+    <AddCreateUserForm update={update} />
   );
 };
 

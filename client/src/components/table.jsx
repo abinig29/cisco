@@ -38,7 +38,7 @@ const BasicTable = ({ data, columns, filterKey,keyToDisplay }) => {
         type="text"
         value={table.getColumn(filterKey)?.getFilterValue() ?? ""}
         onChange={handleFilterChange}
-        className="border mb-4 mx-10 text-sm rounded-lg  block w-[200px] p-2.5 bg-gray-700 border-gray-600 text-white  "
+        className="border mb-4 mx-10 text-sm rounded-lg  block w-[200px] p-2.5 bg-gray-700 border-gray-600 text-white"
         placeholder={`Filter with ${keyToDisplay??filterKey}`}
       />
       <table className="w-full  ">

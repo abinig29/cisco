@@ -12,11 +12,10 @@ const AddEditNews = () => {
   if (id) update = true;
   const { data: news, isLoading: newsLoading } = useGetNewsQuery();
   const exactNews = news?.news.find((n) => n._id === id);
-  if (newsLoading) {
+  if (update && newsLoading) {
     return (
       <div className="grid place-content-center  h-screen">
-        <Loader
-        />
+        <Loader />
       </div>
     );
   }

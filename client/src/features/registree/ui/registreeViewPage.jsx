@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import Modal from "../../../components/modal";
 import { Oval } from "react-loader-spinner";
 import { NotFound } from "../../../components/notFound";
-import { registreeType } from "../../../utils/utils";
+import { imgUrl, registreeType } from "../../../utils/utils";
 import ImageModal from "../../../components/imageModal";
 import Loader from "../../../components/loader";
 
@@ -58,7 +58,7 @@ const RegistreeView = ({ registree, course }) => {
                 onClick={() => {
                   setOpenModal(true);
                 }}
-                src={registree.picture}
+                src={imgUrl + registree.picture}
                 alt=""
               />
             </div>
@@ -68,7 +68,7 @@ const RegistreeView = ({ registree, course }) => {
                 onClick={() => {
                   setOpenModal2(true);
                 }}
-                src={registree.personalPicture}
+                src={imgUrl + registree.personalPicture}
                 alt=""
               />
             </div>
@@ -144,12 +144,12 @@ const RegistreeView = ({ registree, course }) => {
       <ImageModal
         openModal={openModal}
         setOpenModal={setOpenModal}
-        picture={registree.picture}
+        picture={imgUrl + registree.picture}
       />
       <ImageModal
         openModal={openModal2}
         setOpenModal={setOpenModal2}
-        picture={registree.personalPicture}
+        picture={imgUrl + registree.personalPicture}
       />
     </div>
   );

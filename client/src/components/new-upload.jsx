@@ -6,6 +6,7 @@ import { deleteFile } from "../utils/utils";
 import { storage } from "../firbase";
 import { FaStarOfLife } from "react-icons/fa";
 import { MdCloudUpload } from "react-icons/md";
+import { string } from "yup";
 const CustomUpload = ({
   picture,
   video,
@@ -15,16 +16,14 @@ const CustomUpload = ({
   textColor,
   acceptedFile,
 }) => {
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
-  const [imgPerc, setImgPerc] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
-
+  };
   const [imgList, setImgList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const handleCancel = () => setPreviewOpen(false);
@@ -36,85 +35,33 @@ const CustomUpload = ({
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
+
   useEffect(() => {
-    // if (!imgList.length)
-    if (picture) {
-      let pImage = {
-        "aria-label": undefined,
-        "aria-labelledby": undefined,
-        name: "",
-        response: undefined,
-        uid: "",
-        xhr: undefined,
-        url: picture,
-      };
-      console.log(picture);
-
-      setImgList([pImage]);
-    }
-  }, [picture]);
-  const onChange = ({ fileList: newFileList }) => {
-    setIsUploading(true);
-    const uploadFile = (fileUpload, file, fileType) => {
-      const folder = fileType === "imgUrl" ? "images/" : "videos/";
-      const fileName = new Date().getTime() + file.name;
-      const storageRef = ref(storage, folder + fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImgPerc(Math.round(progress));
-          switch (snapshot.state) {
-            case "paused":
-              break;
-            case "running":
-              break;
-            default:
-              break;
-          }
-        },
-        (error) => {
-          setIsUploading(false);
-          console.log(error);
-          switch (error.code) {
-            case "storage/unauthorized":
-              console.log(error);
-              break;
-            case "storage/canceled":
-              break;
-            case "storage/unknown":
-              break;
-            default:
-              break;
-          }
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setIsUploading(false);
-            acceptedFile ? setVideo(downloadURL) : setImg(downloadURL);
-          });
-        }
-      );
-    };
-
-    if (newFileList?.length) {
-      if (!acceptedFile) {
-        if (picture) {
-          deleteFile(picture);
-          console.log("delet");
-        }
+    if (!imgList.length)
+      if (picture && typeof picture === "string") {
+        console.log("hi");
+        let pImage = {
+          "aria-label": undefined,
+          "aria-labelledby": undefined,
+          name: "",
+          response: undefined,
+          uid: "",
+          xhr: undefined,
+          url: picture,
+        };
+        console.log(picture);
+        setImgList([pImage]);
       }
-      // setImgList(newFileList)
-      uploadFile(
-        newFileList,
-        newFileList[0].originFileObj,
-        acceptedFile ? "videoUrl" : "imgUrl"
-      );
+  }, []);
+
+  const onChange = ({ fileList: newFileList }) => {
+    if (newFileList?.length) {
+      setImgList(newFileList);
+      acceptedFile
+        ? setVideo(newFileList[0].originFileObj)
+        : setImg(newFileList[0].originFileObj);
     }
   };
-
   const uploadButton = (
     <div>
       <div
@@ -145,30 +92,13 @@ const CustomUpload = ({
       )}
       <ImgCrop rotationSlider>
         <Upload
-          // beforeUpload={beforeUpload}
           listType="picture-card"
           fileList={imgList}
           onPreview={handlePreview}
           onChange={onChange}
           maxCount={1}
-          disabled={isUploading}
         >
-          {!isUploading ? (
-            imgList.length >= 2 ? null : (
-              uploadButton
-            )
-          ) : (
-            <Progress
-              type="circle"
-              size={80}
-              strokeColor="#108ee9"
-              percent={imgPerc}
-              status="active"
-              format={(percent) => (
-                <span style={{ color: "#108ee9" }}>{`${percent}%`}</span>
-              )}
-            />
-          )}
+          {imgList.length >= 2 ? null : uploadButton}
         </Upload>
       </ImgCrop>
 

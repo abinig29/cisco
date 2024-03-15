@@ -20,11 +20,10 @@ const AddEditCourse = () => {
   const course = courses?.courses.find((course) => course._id === id);
   const lectures = users?.users.filter((user) => user.role === ROLES.lecture);
   const catagories = catagory?.catagories;
-  if (courseLoading || userLoading || catagoryLoading) {
+  if (update && (courseLoading || userLoading || catagoryLoading)) {
     return (
       <div className="grid place-content-center  h-screen">
-        <Loader
-        />
+        <Loader />
       </div>
     );
   }

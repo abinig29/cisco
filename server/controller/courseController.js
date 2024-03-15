@@ -23,17 +23,18 @@ export const getCourses = async (req, res) => {
 export const createCourse = async (req, res) => {
   const {
     courseCode,
-    topics,
-    coverdTopics,
-    lecture,
+    aauExtensionStudentPrice,
     courseProvider: catagoryId,
   } = req.body;
+  console.log({ aauExtensionStudentPrice });
+
   const duplicate = await Course.findOne({ courseCode });
   if (duplicate) throw new BadRequestError("Course dose exist");
 
   const catagory = await Catagory.findById(catagoryId);
+  const picture = req?.file?.filename;
 
-  const course = await Course.create(req.body);
+  const course = await Course.create({ ...req.body, picture });
   if (catagory) catagory.courses.push(course._id);
   catagory?.save();
   if (course) {
@@ -103,11 +104,13 @@ export const updateCourse = async (req, res) => {
   const role = req.role;
 
   const course = await Course.findById(id).lean().exec();
+  const picture = req?.file?.filename ? req?.file?.filename : course?.picture;
+
   if (!course) throw new BadRequestError("No course found");
   if (!role == "Admin" && !course.lecture.includes(userId))
     throw new BadRequestError("Cannot update courses other than yours");
   const catagory = await Catagory.findById(course.courseProvider);
-  
+
   if (req.body.courseProvider != course.courseProvider) {
     const indexToDelete = catagory.courses.indexOf(course._id);
     if (indexToDelete > -1) {
@@ -118,11 +121,14 @@ export const updateCourse = async (req, res) => {
     catagory?.save();
     newCatagory?.save();
   }
-  console.log(req.body.picture)
 
-  const updatedCourse = await Course.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+  const updatedCourse = await Course.findByIdAndUpdate(
+    id,
+    { ...req.body, picture },
+    {
+      new: true,
+    }
+  );
   if (updatedCourse) {
     res.status(200).json({ course: updatedCourse });
   } else {

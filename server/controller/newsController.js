@@ -14,8 +14,10 @@ export const getNews = async (req, res) => {
 //@method POST /news
 //@access private
 export const createNews = async (req, res) => {
+  const picture = req?.file?.filename;
   let newsBody = {
     ...req.body,
+    picture,
   };
   const news = await News.create(newsBody);
   if (news) {
@@ -44,13 +46,20 @@ export const deleteNews = async (req, res) => {
 export const updateNews = async (req, res) => {
   const { id } = req.params;
 
-  const body = {
-    ...req.body,
-  };
+  const news = await News.findById(id);
+  if (!news) throw new NotFoundError("News Not Found");
+  const picture = req?.file?.filename ? req?.file?.filename : news?.picture;
 
-  const updatedNews = await News.findByIdAndUpdate(id, body, {
-    new: true,
-  });
+  const updatedNews = await News.findByIdAndUpdate(
+    id,
+    {
+      ...req.body,
+      picture,
+    },
+    {
+      new: true,
+    }
+  );
 
   if (updatedNews) {
     res.status(200).json({ news: updatedNews });

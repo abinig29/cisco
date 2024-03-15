@@ -26,11 +26,12 @@ const UsersList = () => {
       isLoading: deleteIsLoading,
     },
   ] = useDeleteUserMutation();
-  const profileImg = (picture) =>
-    picture ? (
+  const profileImg = (picture) => {
+    const imgPath = imgUrl + picture;
+    return picture ? (
       <img
         class="w-10 h-10 rounded-full object-cover"
-        src={picture}
+        src={imgPath}
         alt="Rounded avatar"
       ></img>
     ) : (
@@ -49,6 +50,7 @@ const UsersList = () => {
         </svg>
       </div>
     );
+  };
   const columns = [
     {
       header: "Profile",
@@ -121,8 +123,7 @@ const UsersList = () => {
   if (isLoading) {
     return (
       <div className="grid place-content-center  h-screen">
-        <Loader
-        />
+        <Loader />
       </div>
     );
   }

@@ -14,15 +14,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRole } from "../../auth/authSlice";
-import { ROLES } from "../../../utils/utils";
+import { ROLES, imgUrl } from "../../../utils/utils";
 import UploadFile from "../../../components/uploadFile";
 import CustomUpload from "../../../components/new-upload";
 
 const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
+  console.log(course);
   const isAdmin = useSelector(selectRole) === ROLES.admin;
   const [step, setStep] = useState(0);
   const navigate = useNavigate();
-  const [doneUploading, setDoneUploading] = useState(false);
   const [createCourse, { isError, error, isSuccess, isLoading }] =
     useCreateCourseMutation();
   const [
@@ -103,32 +103,63 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
 
   const onSubmit = async (values, { resetForm }) => {
     if (step === 0) return setStep(1);
-    const courseData = { ...values };
-    if (!doneUploading) return;
+    const formData = new FormData();
+    formData?.append("courseName", values.courseName);
+    formData?.append("courseProvider", values.courseProvider);
+    formData?.append("courseCode", values.courseCode);
+    formData?.append("endDate", values.endDate);
+    formData?.append("startDate", values.startDate);
+    formData?.append("registrationDeadline", values.registrationDeadline);
+    formData?.append("aauUGStudentPrice", values.aauUGStudentPrice);
+    formData?.append("aauPGStudentPrice", values.aauPGStudentPrice);
+    formData?.append("description", values.description);
+    formData?.append("shortDescription", values.shortDescription);
+    formData?.append("lecture", values.lecture);
+    formData?.append("picture", values.picture);
+
+    formData?.append(
+      "aauExtensionStudentPrice",
+      values.aauExtensionStudentPrice
+    );
+    formData?.append("aauStaffPrice", values.aauStaffPrice);
+    formData?.append(
+      "noneAAUSelfSponsoredPrice",
+      values.noneAAUSelfSponsoredPrice
+    );
+    formData?.append(
+      "noneAAUOrganizationSponsoredPrice",
+      values.noneAAUOrganizationSponsoredPrice
+    );
+
     if (update) {
       if (!values.endDate) {
-        delete courseData.endDate;
+        formData?.delete("endDate");
       }
       if (!values.startDate) {
-        delete courseData.startDate;
+        formData?.delete("startDate");
       }
       if (!values.registrationDeadline) {
-        delete courseData.registrationDeadline;
+        formData?.delete("registrationDeadline");
       }
     }
     const coverdTopics = topics.filter((topic) => topic.isChecked);
     const topicsLable = [];
     topics.forEach((topic) => topicsLable.push(topic.lable));
     const coverdTopicsLable = [];
-
     coverdTopics.forEach((topic) => coverdTopicsLable.push(topic.lable));
-    courseData.topics = topicsLable;
-    courseData.coverdTopics = coverdTopicsLable;
+
+    topicsLable?.map((tl) => {
+      formData.append("topics", tl);
+    });
+    coverdTopicsLable?.map((cl) => {
+      formData.append("coverdTopics", cl);
+    });
+
     try {
       if (update) {
-        await updateCourse({ course: courseData, id: course._id }).unwrap();
+        await updateCourse({ course: formData, id: course._id }).unwrap();
       } else {
-        await createCourse(courseData).unwrap();
+        await createCourse(formData).unwrap();
       }
     } catch (error) {}
   };
@@ -148,7 +179,7 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     noneAAUOrganizationSponsoredPrice: update
       ? course?.noneAAUOrganizationSponsoredPrice
       : "",
-    picture: update ? course?.picture : "",
+    picture: update ? imgUrl + course?.picture : "",
     shortDescription: update ? course?.shortDescription : "",
     description: update ? course?.description : "",
     lecture: update ? course?.lecture : [],
@@ -173,9 +204,6 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
     }
   };
   const { isDragActive, getRootProps, getInputProps } = useDropzone({ onDrop });
-  useEffect(() => {
-    if (values.picture) setDoneUploading(true);
-  }, [values.picture]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -552,7 +580,7 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
           <div className="w-full flex items-center justify-between">
             <button
               onClick={() => setStep(0)}
-              disabled={isLoading || isUpdateLoading || !doneUploading}
+              disabled={isLoading || isUpdateLoading}
               class="py-2.5 disabled:bg-[#31296471] disabled:cursor-not-allowed px-5 mr-2 text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
             >
               <AiOutlineArrowRight className="mr-2 rotate-180" />
@@ -560,7 +588,7 @@ const AddCreateCourseForm = ({ update, course, lectures, catagories }) => {
             </button>
             <button
               type="submit"
-              disabled={isLoading || isUpdateLoading || !doneUploading}
+              disabled={isLoading || isUpdateLoading}
               class="py-2.5 px-5 mr-2 disabled:bg-[#31296471] disabled:cursor-not-allowed text-sm font-medium   rounded-lg cursor-pointer mb-2 focus:z-10 focus:ring-2  bg-[#312964]  text-white inline-flex items-center"
             >
               {isLoading || isUpdateLoading ? (

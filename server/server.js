@@ -69,19 +69,38 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILE UPLOAD */
-app.post("/api/v1/course", verifyJWT, createCourse);
-app.post("/api/v1/news", verifyJWT, createNews);
-app.post("/api/v1/user", verifyJWT, createUser);
-app.post("/api/v1/registree", createRegistree);
-app.post("/api/v1/layout", verifyJWT, createLayout);
+app.post("/api/v1/course", verifyJWT, upload.single("picture"), createCourse);
+app.post("/api/v1/news", verifyJWT, upload.single("picture"), createNews);
+app.post("/api/v1/user", verifyJWT, upload.single("picture"), createUser);
+// picture: {
+//   type: String,
+//   required: [true, "you must provide bill photo"],
+// },
+// personalPicture: {
+//   type: String,
+//   required: [true, "you must provide personal photo"],
+// },
+const uploadFields = [
+  { name: "picture", maxCount: 1 },
+  { name: "personalPicture", maxCount: 1 },
+];
+const uploadMiddleware = upload.fields(uploadFields);
+app.post("/api/v1/registree", uploadMiddleware, createRegistree);
+app.post("/api/v1/layout", verifyJWT, upload.single("picture"), createLayout);
 
-app.patch("/api/v1/course/:id", verifyJWT, updateCourse);
-app.patch("/api/v1/user/:id", verifyJWT, updateUser);
-app.patch("/api/v1/news/:id", verifyJWT, updateNews);
+app.patch(
+  "/api/v1/course/:id",
+  verifyJWT,
+  upload.single("picture"),
+  updateCourse
+);
+app.patch("/api/v1/user/:id", verifyJWT, upload.single("picture"), updateUser);
+app.patch("/api/v1/news/:id", verifyJWT, upload.single("picture"), updateNews);
+
 app.patch(
   "/api/v1/layout/update",
   verifyJWT,
-
+  upload.single("picture"),
   updateLayout
 );
 

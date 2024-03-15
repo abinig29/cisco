@@ -3,6 +3,7 @@ import { useGetSingleLayoutQuery } from "../features/layout/layoutApiSlice";
 import { useNavigate } from "react-router-dom";
 import BannerLoader from "./loader/bannerLoader";
 import { BsFillPlayFill } from "react-icons/bs";
+import { imgUrl } from "../utils/utils";
 
 const Video = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Video = () => {
                 <img
                   className="object-cover"
                   style={{ width: "100%", height: "400px" }}
-                  src={layout.banner}
+                  src={imgUrl + layout.banner}
                   alt="Banner"
                 />
                 <button
