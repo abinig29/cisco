@@ -1,11 +1,9 @@
-import {  useFormik } from "formik";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { userSchema } from "../schema";
 import { useLoginMutation } from "../authApiSlice";
 import { useNavigate } from "react-router-dom";
 import r from "../../../assets/r-logo.png";
-
-
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,21 +42,12 @@ const Login = () => {
   return (
     <div className="">
       <main className="grid place-content-center min-h-[calc(100vh-76px)] ">
-        <div className="w-full  flex justify-center">
-          <img src={r} alt="" className="w-[300px]" />
-        </div>
-
         <div class=" text-black  w-[300px] md:w-[400px] ">
           <div class="px-6 py-6 lg:px-8">
-            <h3 class="mb-4 text-xl font-medium  ">
-              Sign in to our platform
-            </h3>
+            <h3 class="mb-4 text-xl font-medium  ">Sign in to our platform</h3>
             <form class="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label
-                  for="email"
-                  class="block mb-2 text-sm font-medium  "
-                >
+                <label for="email" class="block mb-2 text-sm font-medium  ">
                   Your email
                 </label>
                 <input
